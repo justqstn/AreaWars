@@ -1,6 +1,6 @@
 {
-  "Name": "AreaWars",
-  "Description": "Режим от just_qstn",
+  "Name": "TDM2",
+  "Description": "Team Dead Match. Битва двух команд",
   "StartClientVersion": 334,
   "MapFilter": {
     "IsBlank": false,
@@ -8,15 +8,35 @@
   },
   "MapLists": [
     {
-      "MapListId": 39549
+      "MapListId": 324,
+      "Name": "Официальные карты"
+    },
+    {
+      "MapListId": 581
     }
   ],
   "Parameters": {
     "Bool": [
       {
-        "Name": "TestMode",
-        "DisplayName": "Тестовый режим",
-        "Default": false
+        "Name": "MapRotation",
+        "DisplayName": "GmParams/MapRotation",
+        "Default": true
+      },
+      {
+        "Name": "OnlyKnives",
+        "DisplayName": "GmParams/OnlyKnives"
+      },
+      {
+        "Name": "PartialDesruction",
+        "DisplayName": "GmParams/PartialDesruction"
+      },
+      {
+        "Name": "LoosenBlocks",
+        "DisplayName": "GmParams/LoosenBlocks"
+      },
+      {
+        "Name": "FriendlyFire",
+        "DisplayName": "GmParams/FriendlyFire"
       }
     ]
   }
