@@ -1,5 +1,5 @@
 {
-  "Name": "<B><color=red>Area</color><color=blue>Wars</color></B>",
+  "Name": "AreaWars",
   "Description": "Режим от just_qstn",
   "StartClientVersion": 334,
   "MapFilter": {
