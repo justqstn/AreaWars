@@ -1,4 +1,3 @@
-
 // AreaWars v1.7.1
 // от игрока just_qstn
 // Все права защишены - All rights reversed
