@@ -279,7 +279,7 @@ function prd_Regen(durability, cost, currency) {
 }
 
 function prd_Saves(type, cost, currency) {
-	this.Name = "Сохранение " + type == "gold" ? "золота" : "серебра";
+	this.Name = "Сохранение " + (type == "gold" ? "золота" : "серебра");
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return !p.Properties.Get("save_" + type).Value; }
@@ -303,7 +303,7 @@ function prd_MaxPoints(plus, limit, cost, currency) {
 }
 
 function prd_Boosters(type, plus, limit, cost, currency) {
-	this.Name = "+" + plus + " к бустеру" + type == "gold_booster" ? " золота" : " серебра" + " (лимит " + limit + " * уровень базы)";
+	this.Name = "+" + plus + " к бустеру" + (type == "gold_booster" ? " золота" : " серебра" + " (лимит " + limit + " * уровень базы)");
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return p.Team.Properties.Get(type).Value < limit * p.Team.Properties.Get("level").Value; };
