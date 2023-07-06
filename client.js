@@ -7,7 +7,7 @@
 
 
 // Константы
-const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 4, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "", DEFAULT_PROPS = {
+const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "", DEFAULT_PROPS = {
 	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint"],
 	Values: [0, 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун"]
 }, DEFAULT_TEAM_PROPS = {
