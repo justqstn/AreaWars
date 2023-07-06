@@ -1,6 +1,6 @@
 {
   "Name": "AreaWars",
-  "Description": "Режим от just_qstn",
+  "Description": "Режим от just_qstn. ВНИМАНИЕ: для начала игры требуется 2 человека",
   "StartClientVersion": 334,
   "MapFilter": {
     "IsBlank": false,
