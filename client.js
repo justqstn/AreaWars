@@ -63,7 +63,7 @@ Blue.Build.BlocksSet.Value = BuildBlocksSet.Blue;
 Red.Build.BlocksSet.Value = BuildBlocksSet.Red;
 
 Teams.OnAddTeam.Add(function (t) {
-	if (t == Banned) t.Properties.Get("points").Value = -10000;
+	if (t == Banned) t.Properties.Get("points").Value = 10000;
 	else for (i in DEFAULT_TEAM_PROPS.Names) {
 		t.Properties.Get(DEFAULT_TEAM_PROPS.Names[i]).Value = DEFAULT_TEAM_PROPS.Values[i];
 	}
