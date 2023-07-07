@@ -48,7 +48,6 @@ AddArea("nuke", ["nuke"], { r: 0.67, b: 0.15 }, false, false);
 AddArea("ban", ["ban"], rgb(255, 255, 255), true, true);
 AddArea("autobridge", ["ab"], rgb(255, 255, 255), true, true);
 
-
 // Создание команд
 Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.7global by just_qstn</i>", { r: 0.15, b: 0.67 });
 Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.7global by just_qstn</i>", { r: 0.67, b: 0.15 });
