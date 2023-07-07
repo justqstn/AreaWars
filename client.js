@@ -310,7 +310,7 @@ function prd_Boosters(type, plus, limit, cost, currency) {
 }
 
 function prd_Autobridge(type, cost, currency) {
-	this.Name = "Автомост" + type == "autobridge_perm" ? " (пермаментный)" : "";
+	this.Name = "Автомост " + (type == "autobridge_perm" ? " (пермаментный)" : "");
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return !p.Properties.Get(type).Value; };
