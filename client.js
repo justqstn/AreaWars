@@ -63,9 +63,9 @@ Red.Build.BlocksSet.Value = BuildBlocksSet.Red;
 
 Teams.OnAddTeam.Add(function (t) {
 	if (t == Banned) t.Properties.Get("points").Value = 10000;
-	else for (i in DEFAULT_TEAM_PROPS.Names) {
-		t.Properties.Get(DEFAULT_TEAM_PROPS.Names[i]).Value = DEFAULT_TEAM_PROPS.Values[i];
-	}
+	else DEFAULT_TEAM_PROPS.Names.forEach(function(prop, index) {
+		t.Properties.Get(prop).Value = DEFAULT_TEAM_PROPS.Values[index];
+	});
 });
 
 // Интерфейс
@@ -161,15 +161,14 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 });
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
-	try {
-		p.Spawns.Spawn();
-		saved_id.Value = saved_id.Value.replace(p.Id + " ", "");
-		p.Properties.Get("rid").Value = p.IdInRoom;
-		for (i in DEFAULT_PROPS.Names) {
-			p.Properties.Get(DEFAULT_PROPS.Names[i]).Value =
-				props.Get(DEFAULT_PROPS.Names[i] + p.id).Value || DEFAULT_PROPS.Values[i];
-		}
-	} catch (e) { msg.Show(e.name, e.message); }
+	p.Spawns.Spawn();
+	saved_id.Value = saved_id.Value.replace(p.Id + " ", "");
+	p.Properties.Get("rid").Value = p.IdInRoom;
+	if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
+		p.Properties.Get(prop).Value = props.Get(prop + p.Id).Value || DEFAULT_PROPS.Values[index];
+		props.Get(prop + p.Id).Value = null;
+		p.Properties.Get("loaded").Value = true;
+	});
 });
 
 Players.OnPlayerConnected.Add(function (p) {
@@ -183,9 +182,9 @@ Players.OnPlayerConnected.Add(function (p) {
 });
 
 Players.OnPlayerDisconnected.Add(function (p) {
-	for (i in DEFAULT_PROPS.Names) {
-		props.Get(DEFAULT_PROPS.Names[i] + p.id).Value = p.Properties.Get(DEFAULT_PROPS.Names[i]).Value;
-	}
+	DEFAULT_PROPS.Names.forEach(function (prop) {
+		props.Get(prop+ p.id).Value = p.Properties.Get(prop).Value;
+	});
 	saved_id.Value = saved_id.Value + p.Id + " ";
 });
 
@@ -529,8 +528,8 @@ update_timer.OnTimer.Add(function () {
 	let blue_points = 0, red_points = 0;
 	if (capture_blue.Count > 0 || capture_red.Count > 0) {
 		let blue_plrs = capture_blue.GetPlayers(), red_plrs = capture_red.GetPlayers();
-		for (plr in red_plrs) if (red_plrs[plr].Team == Blue) red_points++;
-		for (plr in blue_plrs) if (blue_plrs[plr] == Red) blue_points++;
+		red_plrs.forEach(function(plr) {if (plr.Team == Blue) red_points++;});
+		blue_plrs.forEach(function(plr) {if (plr.Team == Red) blue_points++;});
 	}
 	if (state.Value == "third") {
 		blue_points = blue_points * 2 + 1;
@@ -650,16 +649,17 @@ function Clearing(time, maintim) {
 		clearingTimer.Restart(time);
 		if (saved_id.Value) {
 			let saved_ids = saved_id.Value.split(" ");
-			for (indx in saved_ids) {
-				for (i in DEFAULT_PROPS.Names) {
-					props.Get(DEFAULT_PROPS.Names[i] + saved_ids[indx]).Value = null;
-				}
-			}
+
+			saved_ids.forEach(function(pid) {
+				DEFAULT_PROPS.Names.forEach(function(prop) {
+					props.Get(prop + pid).Value = null;
+				});
+			});
 		}
 		while (e.moveNext()) {
-			for (i in DEFAULT_TEAM_PROPS.Names) {
-				e.Current.Properties.Get(DEFAULT_TEAM_PROPS[i]).Value = null;
-			}
+			DEFAULT_TEAM_PROPS.forEach(function(prop) {
+				e.Current.Properties.Get(prop).Value = null;
+			});
 		}
 		saved_id.Value = null;
 		if (maintim) main_timer.Restart(maintim);
