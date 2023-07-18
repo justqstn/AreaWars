@@ -548,7 +548,7 @@ clearing_timer.OnTimer.Add(function () {
 			array_areas.pop()
 		}
 		if (array_areas.length > 0) {
-			clearing_timer.Restart(1);
+			clearing_timer.Restart(3);
 			main_timer.Restart(10);
 		}
 	} catch (e) { msg.Show(e.name + " " + e.message); }
