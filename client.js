@@ -536,12 +536,13 @@ update_timer.OnTimer.Add(function () {
 });
 
 clearing_timer.OnTimer.Add(function() {
-	array_areas = GetAreas();
+	if (array_areas == null) array_areas = GetAreas();
 	msg.Show(array_areas.length);
-	for (let i = 0; i < 4; i++) {
+	for (let i = array_areas.length; i > array_areas.length - 10; i--) {
 		let area = array_areas[i];
 		area.Ranges.Clear();
 		area.Tags.Clear();
+		array_areas = array_areas.pop()
 	}
 	if (array_areas.length > 0) {
 		clearing_timer.Restart(1);
@@ -607,6 +608,7 @@ function GetAreas() {
 	}
 	return arr;
 }
+
 
 function FirstPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 1";
