@@ -615,9 +615,10 @@ function GetAreas() {
 
 function ClearAreas() {
 	let e = AreaService.GetEnumerator();
-	while(e.moveNext()) {
+	for (let i = 0; i < 10; i++) {
 		e.Current.Ranges.Clear();
 		e.Current.Tags.Clear();
+		e.moveNext();
 	}
 }
 
