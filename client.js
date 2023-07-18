@@ -37,6 +37,7 @@ BreackGraph.OnlyPlayerBlocksDmg = true;
 BreackGraph.PlayerBlockBoost = true;
 
 Inventory.GetContext().Explosive.Value = false;
+Inventory.GetContext().Build.Value = false;
 
 AddArea("cmd", ["cmd"], rgb(255, 255, 255));
 AddArea("capture_blue", ["blue"], { r: 0.15, b: 0.67 });
@@ -162,7 +163,6 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
 	p.Spawns.Spawn();
-	saved_id.Value = saved_id.Value.replace(p.Id + " ", "");
 	p.Properties.Get("rid").Value = p.IdInRoom;
 	if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
 		p.Properties.Get(prop).Value = props.Get(prop + p.Id).Value || DEFAULT_PROPS.Values[index];
@@ -185,7 +185,6 @@ Players.OnPlayerDisconnected.Add(function (p) {
 	DEFAULT_PROPS.Names.forEach(function (prop) {
 		props.Get(prop+ p.id).Value = p.Properties.Get(prop).Value;
 	});
-	saved_id.Value = saved_id.Value + p.Id + " ";
 });
 
 Damage.OnDeath.Add(function (p) {
@@ -514,6 +513,7 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "end":
 			Clearing(5, 10);
+			ClearProps();
 			state.Value = "clearing";
 			Spawns.GetContext().Enable = false;
 			Spawns.GetContext().Despawn();
@@ -562,12 +562,13 @@ nuke_timer.OnTimer.Add(function () {
 Timers.OnTeamTimer.Add(function (_t) {
 	let t = _t.Team;
 	if (_t.Id == "update") {
-		if (t.Timers.Get("regen").IsStarted && t.Properties.Get("points").Value < t.Properties.Get("max_points").Value) t.Properties.Get("points").Value++;
+		let regen_started = t.Timers.Get("regen").IsStarted;
+		if (!regen_started && !t.Timers.Get("defense").IsStarted) t.Timers.Get("update").Stop();
+		if (regen_started && t.Properties.Get("points").Value < t.Properties.Get("max_points").Value) t.Properties.Get("points").Value++;
 		const clr = t.Properties.Get("points").Value > 75 ? "#32CD32" : t.Properties.Get("points").Value <= 75 && t.Properties.Get("points").Value > 30 ? "#FFD700" : "#FF0000",
 			regen_timer = t.Timers.Get("regen").IsStarted ? "\nТаймер реген.: " + t.Timers.Get("regen").LapsedTime.toFixed() : "",
 			defense_timer = t.Timers.Get("defense").IsStarted ? "\nТаймер защиты: " + t.Timers.Get("defense").LapsedTime.toFixed() : "";
 		t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: " + t.Properties.Get("silver_booster").Value + "/" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + regen_timer + defense_timer + "</B>";
-		if (!t.Timers.Get("regen").IsStarted && !t.Timers.Get("defense").IsStarted) t.Timers.Get("update").Stop();
 	}
 });
 
@@ -639,6 +640,19 @@ function ThirdPhase() {
 	main_timer.Restart(900);
 }
 
+function ClearProps() {
+	let e = Teams.GetEnumerator(), props = Properties.GetContext().GetAllProperties().GetEnumerator();
+	while (props.moveNext()) {
+		props.Current.Value = null;
+	}
+
+	while (e.moveNext()) {
+		DEFAULT_TEAM_PROPS.forEach(function (prop) {
+			e.Current.Properties.Get(prop).Value = null;
+		});
+	}
+}
+
 function Clearing(time, maintim) {
 	try {
 		let a_e = AreaService.GetEnumerator(), _arr = [], e = Teams.GetEnumerator();
@@ -647,21 +661,6 @@ function Clearing(time, maintim) {
 			arr_areas.Value = _arr;
 		}
 		clearingTimer.Restart(time);
-		if (saved_id.Value) {
-			let saved_ids = saved_id.Value.split(" ");
-
-			saved_ids.forEach(function(pid) {
-				DEFAULT_PROPS.Names.forEach(function(prop) {
-					props.Get(prop + pid).Value = null;
-				});
-			});
-		}
-		while (e.moveNext()) {
-			DEFAULT_TEAM_PROPS.forEach(function(prop) {
-				e.Current.Properties.Get(prop).Value = null;
-			});
-		}
-		saved_id.Value = null;
 		if (maintim) main_timer.Restart(maintim);
 	} catch (e) { msg.Show(e.name + " " + e.message); }
 }
