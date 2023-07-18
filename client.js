@@ -542,7 +542,7 @@ clearing_timer.OnTimer.Add(function () {
 		if (array_areas == null) array_areas = GetAreas();
 		
 		for (let i = array_areas.length; i > array_areas.length - 10; i--) {
-			let area = array_areas[i];
+			let area = AreaService.Get(array_areas[i]);
 			area.Ranges.Clear();
 			area.Tags.Clear();
 			array_areas = array_areas.pop()
@@ -608,7 +608,7 @@ function rgb(rc, gc, bc) {
 function GetAreas() {
 	let arr = [], e = AreaService.GetEnumerator();
 	while(e.moveNext()) {
-		if (!e.Current.IsEmpty) arr.push(e.Current);
+		if (!e.Current.IsEmpty) arr.push(e.Current.Name);
 	}
 	return arr;
 }
