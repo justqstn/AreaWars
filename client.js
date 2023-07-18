@@ -548,8 +548,8 @@ clearing_timer.OnTimer.Add(function () {
 			area.Tags.Clear();
 			_arr.splice(i, 1);
 			arr_areas.Value = _arr;
-			if (arr_areas.length) clearingTimer.Stop();
-			else clearingTimer.Restart(1);
+			if (arr_areas.length) clearing_timer.Stop();
+			else clearing_timer.Restart(1);
 		}
 	} catch (e) { msg.Show(e.name + " " + e.message); };
 });
