@@ -23,12 +23,12 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 
 // Переменные
 var props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
-	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [], array_areas;
+	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [], array_areas = Properties.GetContext().Get("arr");
 
 // Настройки
 state.Value = "init";
+array_areas.Value = "";
 banned_id.Value = "";
-saved_id.Value = "";
 
 Ui.GetContext().MainTimerId.Value = main_timer.Id;
 Spawns.GetContext().RespawnTime.Value = 15;
@@ -410,6 +410,10 @@ const Products = [
 ];
 
 // Триггеры и зоны
+AreaService.OnArea.Add(function(a) {
+	array_areas += a.Name + "|";
+});
+
 cmd.OnEnter.Add(function (p, a) {
 	if (p.Id != "9DE9DFD7D1F5C16A") return;
 	try {
@@ -614,9 +618,11 @@ function GetAreas() {
 }
 
 function ClearAreas() {
-	GetAreas().forEach(function(prop){
+	let arr = array_areas.Value.split("|");
+	arr.forEach(function(prop){
 		let a = AreaService.Get(prop);
 		a.Tags.Clear();
+		a.Ranges.Clear();
 	});
 }
 
