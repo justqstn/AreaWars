@@ -643,7 +643,7 @@ function ClearProps() {
 		count++;
 	}
 	while (e.moveNext()) {
-		DEFAULT_TEAM_PROPS.forEach(function (prop) {
+		DEFAULT_TEAM_PROPS.Names.forEach(function (prop) {
 			e.Current.Properties.Get(prop).Value = null;
 		});
 	}
