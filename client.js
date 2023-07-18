@@ -542,7 +542,8 @@ clearing_timer.OnTimer.Add(function () {
 		if (array_areas == null) array_areas = GetAreas();
 		
 		for (let i = array_areas.length - 1; i > array_areas.length - 1; i--) {
-			
+			msg.Show(array_areas[i])
+			let area = AreaService.Get(array_areas[i]);
 			
 			array_areas.pop()
 		}
