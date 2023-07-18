@@ -1,4 +1,4 @@
-\// AreaWars v1.7.2
+// AreaWars v1.7.2
 // от игрока just_qstn
 // Все права защишены - All rights reversed
 
@@ -543,8 +543,7 @@ clearing_timer.OnTimer.Add(function () {
 		
 		for (let i = array_areas.length - 1; i > array_areas.length - 1; i--) {
 			let area = AreaService.Get(array_areas[i]);
-			area.Ranges.Clear();
-			area.Tags.Clear();
+			
 			array_areas.pop()
 		}
 		if (array_areas.length > 0) {
