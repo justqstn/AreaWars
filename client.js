@@ -618,7 +618,7 @@ function FirstPhase() {
 	Inventory.GetContext().Secondary.Value = false;
 	Inventory.GetContext().Build.Value = false;
 
-	main_timer.Restart(2400);
+	main_timer.Restart(600);
 }
 
 function SecondPhase() {
@@ -626,13 +626,13 @@ function SecondPhase() {
 	state.Value = "second";
 
 	updateTimer.RestartLoop(1);
-	main_timer.Restart(5400);
+	main_timer.Restart(1200);
 }
 
 function ThirdPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 3";
 	state.Value = "third";
-	main_timer.Restart(900);
+	main_timer.Restart(300);
 }
 
 function ClearProps() {
