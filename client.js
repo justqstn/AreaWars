@@ -616,7 +616,6 @@ function GetAreas() {
 function ClearAreas() {
 	GetAreas().forEach(function(prop){
 		let a = AreaService.Get(prop);
-		a.Ranges.Clear();
 		a.Tags.Clear();
 	});
 }
