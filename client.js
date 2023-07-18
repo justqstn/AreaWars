@@ -614,12 +614,11 @@ function GetAreas() {
 }
 
 function ClearAreas() {
-	let arr = ["1", "2", "red"];
-	for (let i = 0; i < arr.length; i++) {
-		let area = AreaService.Get(arr[i]);
-		area.Ranges.Clear();
-		area.Tags.Clear();
-	}
+	GetAreas().forEach(function(prop){
+		let a = AreaService.Get(prop);
+		a.Ranges.Clear();
+		a.Tags.Clear();
+	});
 }
 
 
