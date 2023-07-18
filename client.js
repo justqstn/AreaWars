@@ -1,4 +1,4 @@
-// AreaWars v1.7.2
+// AreaWars v1.7.1
 // от игрока just_qstn
 // Все права защишены - All rights reversed
 
@@ -648,7 +648,6 @@ function GetAreas() {
 	let a_e = AreaService.GetEnumerator(), _arr = [];
 	while (a_e.moveNext()) {
 		_arr.push(a_e.Current.Name);
-		arr_areas.Value = _arr;
 	}
 	return _arr;
 }
