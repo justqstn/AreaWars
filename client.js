@@ -50,9 +50,9 @@ AddArea("ban", ["ban"], rgb(255, 255, 255), true, true);
 AddArea("autobridge", ["ab"], rgb(255, 255, 255), true, true);
 
 // Создание команд
-Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.7.2 by just_qstn</i>", { r: 0.15, b: 0.67 });
-Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.7.2 by just_qstn</i>", { r: 0.67, b: 0.15 });
-Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.7global by just_qstn</i>", { r: 0 });
+Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.7.2</i>", { r: 0.15, b: 0.67 });
+Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.7.2</i>", { r: 0.67, b: 0.15 });
+Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.7.2</i>", { r: 0 });
 let Blue = Teams.Get("blue"), Red = Teams.Get("red"), Banned = Teams.Get("banned");
 Blue.Spawns.SpawnPointsGroups.Add(1);
 Red.Spawns.SpawnPointsGroups.Add(2);
@@ -600,6 +600,7 @@ function GetAreas() {
 	while(e.moveNext()) {
 		if (!e.Current.IsEmpty) arr.push(e.Current);
 	}
+	return arr;
 }
 
 function FirstPhase() {
