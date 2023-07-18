@@ -613,6 +613,14 @@ function GetAreas() {
 	return arr;
 }
 
+function ClearAreas() {
+	let e = AreaService.GetEnumerator();
+	while(e.moveNext()) {
+		e.Current.Ranges.Clear();
+		e.Current.Tags.Clear();
+	}
+}
+
 
 function FirstPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 1";
