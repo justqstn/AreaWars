@@ -63,7 +63,7 @@ Blue.Build.BlocksSet.Value = BuildBlocksSet.Blue;
 Red.Build.BlocksSet.Value = BuildBlocksSet.Red;
 
 Teams.OnAddTeam.Add(function (t) {
-	if (t == Banned) t.Properties.Get("points").Value = 10000;
+	if (t == Banned) t.Properties.Get("points").Value = -10000;
 	else DEFAULT_TEAM_PROPS.Names.forEach(function(prop, index) {
 		t.Properties.Get(prop).Value = DEFAULT_TEAM_PROPS.Values[index];
 	});
@@ -224,6 +224,7 @@ Damage.OnKill.Add(function (p, k) {
 
 Properties.OnTeamProperty.Add(function (c, v) {
 	const t = c.Team;
+	if (t == Banned) return;
 	if (v.Name == "hint" || v.Name == "hint_all") return;
 	if (v.Name == "xp" && t.Properties.Get("level").Value < 3 && v.Value >= t.Properties.Get("next_xp").Value) {
 		v.Value = v.Value - t.Properties.Get("next_xp").Value;
@@ -541,23 +542,6 @@ update_timer.OnTimer.Add(function () {
 	Red.Properties.Get("points").Value -= red_points;
 });
 
-clearing_timer.OnTimer.Add(function () {
-	try {
-		if (array_areas == null) array_areas = GetAreas();
-		
-		for (let i = array_areas.length - 1; i > array_areas.length - 1; i--) {
-			msg.Show(JSON.stringify(array_areas));
-			let area = AreaService.Get(array_areas[i]);
-			
-			array_areas.pop()
-		}
-		if (array_areas.length > 0) {
-			clearing_timer.Restart(3);
-			main_timer.Restart(10);
-		}
-	} catch (e) { msg.Show(e.name + " " + e.message); }
-});
-
 Timers.OnTeamTimer.Add(function (_t) {
 	let t = _t.Team;
 	if (_t.Id == "update") {
@@ -573,22 +557,18 @@ Timers.OnTeamTimer.Add(function (_t) {
 
 Timers.OnPlayerTimer.Add(function (t) {
 	let p = t.Player;
-	try {
-		switch (t.Id) {
-			case "immor":
-				p.Properties.Immortality.Value = false;
-				break;
-			case "silver":
-				if (!silver.Contains(p)) return t.Stop();
-				p.Properties.Get("silver").Value += Number(p.Properties.Get("silver_reward").Value * p.Team.Properties.Get("silver_booster").Value);
-				break;
-			case "gold":
-				if (!gold.Contains(p)) return t.Stop();
-				p.Properties.Get("gold").Value = Math.round((p.Properties.Get("gold").Value + p.Properties.Get("gold_reward").Value * p.Team.Properties.Get("gold_booster").Value) * 100) / 100;
-				break;
-		}
-	} catch (e) {
-		msg.Show(e.name + " " + e.message);
+	switch (t.Id) {
+		case "immor":
+			p.Properties.Immortality.Value = false;
+			break;
+		case "silver":
+			if (!silver.Contains(p)) return t.Stop();
+			p.Properties.Get("silver").Value += Number(p.Properties.Get("silver_reward").Value * p.Team.Properties.Get("silver_booster").Value);
+			break;
+		case "gold":
+			if (!gold.Contains(p)) return t.Stop();
+			p.Properties.Get("gold").Value = Math.round((p.Properties.Get("gold").Value + p.Properties.Get("gold_reward").Value * p.Team.Properties.Get("gold_booster").Value) * 100) / 100;
+			break;
 	}
 });
 
@@ -609,14 +589,6 @@ function rgb(rc, gc, bc) {
 	return { r: rc / 255, g: gc / 255, b: bc / 255 };
 }
 
-function GetAreas() {
-	let arr = [], e = AreaService.GetEnumerator();
-	while(e.moveNext()) {
-		if (!e.Current.IsEmpty) arr.push(e.Current.Name);
-	}
-	return arr;
-}
-
 function ClearAreas() {
 	let arr = array_areas.Value.split("|");
 	arr.forEach(function(prop){
@@ -625,7 +597,6 @@ function ClearAreas() {
 		a.Ranges.Clear();
 	});
 }
-
 
 function FirstPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 1";
@@ -673,29 +644,27 @@ function ClearProps() {
 	state.Value = "clearing";
 	main_timer.Restart(10);
 	Spawns.GetContext().Despawn();
-	msg.Show(count);
 }
 
 function End() {
-	try {
-		Ui.GetContext().Hint.Value = "Конец игры" + Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья" : "Красные победили";
-		msg.Show("<i>" + (Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья</i>" : "Красные победили</i>"), "<B><color=red>Area</color><color=blue>Wars</color> v.1.7global\nот just_qstn</B>");
-		state.Value = "end";
-		Damage.GetContext().DamageOut.Value = false;
+	Ui.GetContext().Hint.Value = "Конец игры" + Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья" : "Красные победили";
+	msg.Show("<i>" + (Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья</i>" : "Красные победили</i>"), "<B><color=red>Area</color><color=blue>Wars</color> v.1.7global\nот just_qstn</B>");
+	state.Value = "end";
+	Damage.GetContext().DamageOut.Value = false;
 
-		Ui.GetContext().TeamProp1.Value = {
-			Team: "red", Prop: "hint_reset"
-		};
-		Ui.GetContext().TeamProp2.Value = {
-			Team: "blue", Prop: "hint_reset"
-		};
-		Red.Ui.TeamProp1.Value = {
-			Team: "red", Prop: "hint_reset"
-		};
-		Blue.Ui.TeamProp2.Value = {
-			Team: "blue", Prop: "hint_reset"
-		};
+	Ui.GetContext().TeamProp1.Value = {
+		Team: "red", Prop: "hint_reset"
+	};
+	Ui.GetContext().TeamProp2.Value = {
+		Team: "blue", Prop: "hint_reset"
+	};
+	Red.Ui.TeamProp1.Value = {
+		Team: "red", Prop: "hint_reset"
+	};
+	Blue.Ui.TeamProp2.Value = {
+		Team: "blue", Prop: "hint_reset"
+	};
 
-		main_timer.Restart(10);
-	} catch (e) { msg.Show(e.name + " " + e.message) }
+	ClearAreas();
+	main_timer.Restart(10);
 }
