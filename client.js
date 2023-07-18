@@ -23,7 +23,7 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 
 // Переменные
 var props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
-	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [], arr_areas = props.Get("arr");
+	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [];
 
 // Настройки
 state.Value = "init";
@@ -509,10 +509,8 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "third":
 			End();
-			Clearing(15);
 			break;
 		case "end":
-			Clearing(5, 10);
 			ClearProps();
 			state.Value = "clearing";
 			Spawns.GetContext().Enable = false;
@@ -541,22 +539,19 @@ update_timer.OnTimer.Add(function () {
 
 clearing_timer.OnTimer.Add(function () {
 	try {
-		for (let i = 0; i < 15; i++) {
-			let _arr = arr_areas.Value;
-			let area = AreaService.Get(_arr[i]);
+		clearing_timer.Restart(1);
+		let arr = GetAreas();
+		for (let i = 0; i < (15 - arr.length < 0 ? 15 : 15 - arr.length); i++) {
+			if (arr.length == 0) {
+				clearing_timer.Stop();
+				break;
+			}
+			let area = AreaService.Get(arr[i]);
+			if (area.IsEmpty) continue;
 			area.Ranges.Clear();
 			area.Tags.Clear();
-			_arr.splice(i, 1);
-			arr_areas.Value = _arr;
-			if (arr_areas.length) clearing_timer.Stop();
-			else clearing_timer.Restart(1);
 		}
 	} catch (e) { msg.Show(e.name + " " + e.message); };
-});
-
-nuke_timer.OnTimer.Add(function () {
-	nuke.Enable = false;
-	v_nuke.Enable = false;
 });
 
 Timers.OnTeamTimer.Add(function (_t) {
@@ -641,25 +636,32 @@ function ThirdPhase() {
 }
 
 function ClearProps() {
+	let count = 0;
 	let e = Teams.GetEnumerator(), props = Properties.GetContext().GetAllProperties().GetEnumerator();
 	while (props.moveNext()) {
 		props.Current.Value = null;
+		count++;
 	}
-
 	while (e.moveNext()) {
 		DEFAULT_TEAM_PROPS.forEach(function (prop) {
 			e.Current.Properties.Get(prop).Value = null;
 		});
 	}
+	msg.Show(count);
+}
+
+function GetAreas() {
+	let a_e = AreaService.GetEnumerator(), _arr = [];
+	while (a_e.moveNext()) {
+		_arr.push(a_e.Current.Name);
+		arr_areas.Value = _arr;
+	}
+	return _arr;
 }
 
 function Clearing(time, maintim) {
 	try {
-		let a_e = AreaService.GetEnumerator(), _arr = [], e = Teams.GetEnumerator();
-		while (a_e.moveNext()) {
-			_arr.push(a_e.Current.Name);
-			arr_areas.Value = _arr;
-		}
+		
 		clearing_timer.Restart(time);
 		if (maintim) main_timer.Restart(maintim);
 	} catch (e) { msg.Show(e.name + " " + e.message); }
