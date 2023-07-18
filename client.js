@@ -652,7 +652,7 @@ function ClearProps() {
 
 function End() {
 	try {
-		Ui.GetContext().Hint.Value = "Конец игры";
+		Ui.GetContext().Hint.Value = "Конец игры" + Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья" : "Красные победили";
 		msg.Show("<i>" + (Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья</i>" : "Красные победили</i>"), "<B><color=red>Area</color><color=blue>Wars</color> v.1.7global\nот just_qstn</B>");
 		state.Value = "end";
 		Damage.GetContext().DamageOut.Value = false;
