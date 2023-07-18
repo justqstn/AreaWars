@@ -1,4 +1,4 @@
-// AreaWars v1.7.1
+// AreaWars v1.7.2
 // от игрока just_qstn
 // Все права защишены - All rights reversed
 
@@ -509,16 +509,10 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "third":
 			End();
-			clearing_timer.Restart(15);
+			clearing_timer.Restart(1);
 			break;
 		case "end":
 			ClearProps();
-			main_timer.Restart(10);
-			state.Value = "clearing";
-			Spawns.GetContext().Enable = false;
-			Spawns.GetContext().Despawn();
-			break;
-		case "clearing":
 			Game.RestartGame();
 			break;
 	}
