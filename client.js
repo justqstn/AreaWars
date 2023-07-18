@@ -23,7 +23,7 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 
 // Переменные
 var props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
-	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [];
+	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [], array_areas;
 
 // Настройки
 state.Value = "init";
@@ -130,7 +130,7 @@ Map.OnLoad.Add(function () {
 
 Teams.OnRequestJoinTeam.Add(function (p, t) {
 	if (state.Value == "init" || t == Banned) return;
-	if (p.NickName == p.Id || p.Properties.Lvl.Value < 45) {
+	if (p.NickName == p.Id) {
 		p.Ui.Hint.Value = "Вы забанены сервером. Причина: ваш ник это айди или уровень меньше 45";
 		Banned.Add(p);
 		p.Spawns.Spawn();
@@ -533,19 +533,15 @@ update_timer.OnTimer.Add(function () {
 	Red.Properties.Get("points").Value -= red_points;
 });
 
-clearing_timer.OnTimer.Add(function () {
-	try {
-		let arr = GetAreas();
-		if (arr.length == 0) {
-			clearing_timer.Restart(1);
-		}
-		for (let i = 0; i < (15 - arr.length < 0 ? 15 : 15 - arr.length); i++) {
-			let area = AreaService.Get(arr[i]);
-			if (area.IsEmpty) continue;
-			area.Ranges.Clear();
-			area.Tags.Clear();
-		}
-	} catch (e) { msg.Show(e.name + " " + e.message); };
+clearing_timer.OnTimer.Add(function() {
+	array_areas = GetAreas();
+	msg.Show(array_areas.length);
+	if (array_areas.length > 0) clearing_timer.Restart(1);
+	for (let i = 0; i < 16; i++) {
+		let area = array_areas[i];
+		area.Ranges.Clear();
+		area.Tags.Clear();
+	}
 });
 
 Timers.OnTeamTimer.Add(function (_t) {
@@ -599,6 +595,13 @@ function rgb(rc, gc, bc) {
 	return { r: rc / 255, g: gc / 255, b: bc / 255 };
 }
 
+function GetAreas() {
+	let arr = [], e = AreaService.GetEnumerator();
+	while(e.moveNext()) {
+		if (!e.Current.IsEmpty) arr.push(e.Current);
+	}
+}
+
 function FirstPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 1";
 	state.Value = "first";
@@ -642,14 +645,6 @@ function ClearProps() {
 		});
 	}
 	msg.Show(count);
-}
-
-function GetAreas() {
-	let a_e = AreaService.GetEnumerator(), _arr = [];
-	while (a_e.moveNext()) {
-		_arr.push(a_e.Current.Name);
-	}
-	return _arr;
 }
 
 function Clearing(time, maintim) {
