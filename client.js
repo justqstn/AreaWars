@@ -509,9 +509,11 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "third":
 			End();
+			clearing_timer.Restart(15);
 			break;
 		case "end":
 			ClearProps();
+			main_timer.Restart(10);
 			state.Value = "clearing";
 			Spawns.GetContext().Enable = false;
 			Spawns.GetContext().Despawn();
@@ -539,13 +541,11 @@ update_timer.OnTimer.Add(function () {
 
 clearing_timer.OnTimer.Add(function () {
 	try {
-		clearing_timer.Restart(1);
 		let arr = GetAreas();
+		if (arr.length == 0) {
+			clearing_timer.Restart(1);
+		}
 		for (let i = 0; i < (15 - arr.length < 0 ? 15 : 15 - arr.length); i++) {
-			if (arr.length == 0) {
-				clearing_timer.Stop();
-				break;
-			}
 			let area = AreaService.Get(arr[i]);
 			if (area.IsEmpty) continue;
 			area.Ranges.Clear();
