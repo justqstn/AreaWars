@@ -614,8 +614,8 @@ function GetAreas() {
 }
 
 function ClearAreas() {
-	let arr = GetAreas();
-	for (let i = 0; i < 10; i++) {
+	let arr = ["1", "2", "red"];
+	for (let i = 0; i < arr.length; i++) {
 		let area = AreaService.Get(arr[i]);
 		area.Ranges.Clear();
 		area.Tags.Clear();
