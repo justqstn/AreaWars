@@ -1,4 +1,4 @@
-// AreaWars v1.7.1
+// AreaWars v1.7.2
 // от игрока just_qstn
 // Все права защишены - All rights reversed
 
@@ -536,11 +536,14 @@ update_timer.OnTimer.Add(function () {
 clearing_timer.OnTimer.Add(function() {
 	array_areas = GetAreas();
 	msg.Show(array_areas.length);
-	if (array_areas.length > 0) clearing_timer.Restart(1);
-	for (let i = 0; i < 16; i++) {
+	for (let i = 0; i < 4; i++) {
 		let area = array_areas[i];
 		area.Ranges.Clear();
 		area.Tags.Clear();
+	}
+	if (array_areas.length > 0) {
+		clearing_timer.Restart(1);
+		main_timer.Restart(10);
 	}
 });
 
@@ -648,14 +651,6 @@ function ClearProps() {
 	msg.Show(count);
 }
 
-function Clearing(time, maintim) {
-	try {
-		
-		clearing_timer.Restart(time);
-		if (maintim) main_timer.Restart(maintim);
-	} catch (e) { msg.Show(e.name + " " + e.message); }
-}
-
 function End() {
 	try {
 		Ui.GetContext().Hint.Value = "Конец игры";
@@ -676,6 +671,6 @@ function End() {
 			Team: "blue", Prop: "hint_reset"
 		};
 
-		main_timer.Restart(30);
+		main_timer.Restart(10);
 	} catch (e) { msg.Show(e.name + " " + e.message) }
 }
