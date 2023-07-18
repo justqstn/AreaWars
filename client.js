@@ -509,7 +509,6 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "third":
 			End();
-			clearing_timer.Restart(1);
 			break;
 		case "end":
 			ClearProps();
