@@ -236,7 +236,7 @@ Properties.OnTeamProperty.Add(function (c, v) {
 
 	t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: " + t.Properties.Get("silver_booster").Value + "/" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + regen_timer + defense_timer + "</B>";
 	t.Properties.Get("hint_all").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color></B>";
-	if (v.Name == "points" && v.Value <= 0 && v.Value != null && state.Value != "end" && state.Value != "clearing" && state.Value != "init" && state.Value == "waiting") End();
+	if (t.Properties.Get("points").Value <= 0) End();
 });
 
 // Магазин
@@ -336,7 +336,7 @@ function prd_Exp(plus, cost, currency) {
 
 const Products = [
 	new prd_Inventory("Build", 500, "silver"), new prd_Inventory("Secondary", 3000, "silver"), new prd_Inventory("Main", 2.25, "gold"), new prd_Regen(10, 15000, "silver"), new prd_Regen(30, 7, "gold"),
-	new prd_Saves("save_silver", 50000, "silver"), new prd_Saves("save_gold", 40, "gold"), new prd_Vests(1, 12000), new prd_Vests(2, 50000), new prd_Vests(3, 82000), new prd_MaxPoints(5, 150, 3, "gold"), new prd_MaxPoints(15, 150, 8, "gold"),
+	new prd_Saves("silver", 50000, "silver"), new prd_Saves("gold", 40, "gold"), new prd_Vests(1, 12000), new prd_Vests(2, 50000), new prd_Vests(3, 82000), new prd_MaxPoints(5, 150, 3, "gold"), new prd_MaxPoints(15, 150, 8, "gold"),
 	new prd_Boosters("silver_booster", 0.25, 3, 20000, "silver"), new prd_Boosters("silver_booster", 0.5, 3, 3, "gold"), new prd_Boosters("gold_booster", 0.1, 2, 50000, "silver"), new prd_Boosters("gold_booster", 0.2, 2, 7, "gold"),
 	{
 		Name: "Аптечка (+15 * уровень базы)", Currency: "gold", Cost: 7.5, Error: "Достигнут лимит очков",
