@@ -411,7 +411,7 @@ const Products = [
 
 // Триггеры и зоны
 AreaService.OnArea.Add(function(a) {
-	array_areas += a.Name + "|";
+	array_areas.Value += a.Name + "|";
 });
 
 cmd.OnEnter.Add(function (p, a) {
