@@ -537,19 +537,21 @@ update_timer.OnTimer.Add(function () {
 	Red.Properties.Get("points").Value -= red_points;
 });
 
-clearing_timer.OnTimer.Add(function() {
-	if (array_areas == null) array_areas = GetAreas();
-	msg.Show(array_areas.length);
-	for (let i = array_areas.length; i > array_areas.length - 10; i--) {
-		let area = array_areas[i];
-		area.Ranges.Clear();
-		area.Tags.Clear();
-		array_areas = array_areas.pop()
-	}
-	if (array_areas.length > 0) {
-		clearing_timer.Restart(1);
-		main_timer.Restart(10);
-	}
+clearing_timer.OnTimer.Add(function () {
+	try {
+		if (array_areas == null) array_areas = GetAreas();
+		msg.Show(array_areas.length);
+		for (let i = array_areas.length; i > array_areas.length - 10; i--) {
+			let area = array_areas[i];
+			area.Ranges.Clear();
+			area.Tags.Clear();
+			array_areas = array_areas.pop()
+		}
+		if (array_areas.length > 0) {
+			clearing_timer.Restart(1);
+			main_timer.Restart(10);
+		}
+	} catch (e) { msg.Show(e.name + " " + e.message); }
 });
 
 Timers.OnTeamTimer.Add(function (_t) {
