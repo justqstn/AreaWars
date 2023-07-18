@@ -540,7 +540,7 @@ update_timer.OnTimer.Add(function () {
 clearing_timer.OnTimer.Add(function () {
 	try {
 		if (array_areas == null) array_areas = GetAreas();
-		msg.Show(array_areas.length);
+		
 		for (let i = array_areas.length; i > array_areas.length - 10; i--) {
 			let area = array_areas[i];
 			area.Ranges.Clear();
