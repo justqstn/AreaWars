@@ -335,7 +335,7 @@ function prd_Exp(plus, cost, currency) {
 }
 
 const Products = [
-	new prd_Inventory("Build", 500, "silver"), new prd_Inventory("Secondary", 3000, "silver"), new prd_Inventory("Main", 2.25, "gold"), new prd_Regen(10, 15000, "silver"), new prd_Regen(30, 7, "gold"),
+	new prd_Inventory("Build", 500, "silver"), new prd_Inventory("Secondary", 3000, "silver"), new prd_Inventory("Main", 1.5, "gold"), new prd_Regen(10, 15000, "silver"), new prd_Regen(30, 7, "gold"),
 	new prd_Saves("silver", 50000, "silver"), new prd_Saves("gold", 40, "gold"), new prd_Vests(1, 12000), new prd_Vests(2, 50000), new prd_Vests(3, 82000), new prd_MaxPoints(5, 150, 3, "gold"), new prd_MaxPoints(15, 150, 8, "gold"),
 	new prd_Boosters("silver_booster", 0.25, 3, 20000, "silver"), new prd_Boosters("silver_booster", 0.5, 3, 3, "gold"), new prd_Boosters("gold_booster", 0.1, 2, 50000, "silver"), new prd_Boosters("gold_booster", 0.2, 2, 7, "gold"),
 	{
