@@ -515,6 +515,8 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "end":
 			ClearProps();
+			break;
+		case "clearing":
 			Game.RestartGame();
 			break;
 	}
@@ -650,8 +652,12 @@ function ClearProps() {
 	while (e.moveNext()) {
 		DEFAULT_TEAM_PROPS.Names.forEach(function (prop) {
 			e.Current.Properties.Get(prop).Value = null;
+			count++;
 		});
 	}
+	state.Value = "clearing";
+	main_timer.Restart(10);
+	Spawns.GetContext().Despawn();
 	msg.Show(count);
 }
 
