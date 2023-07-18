@@ -545,7 +545,7 @@ clearing_timer.OnTimer.Add(function () {
 			let area = AreaService.Get(array_areas[i]);
 			area.Ranges.Clear();
 			area.Tags.Clear();
-			array_areas = array_areas.pop()
+			array_areas.pop()
 		}
 		if (array_areas.length > 0) {
 			clearing_timer.Restart(1);
