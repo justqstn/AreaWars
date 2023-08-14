@@ -53,14 +53,14 @@ AddArea("autobridge", ["ab"], rgb(255, 255, 255), true, true);
 Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.7.2</i>", { r: 0.15, b: 0.67 });
 Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.7.2</i>", { r: 0.67, b: 0.15 });
 Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.7.2</i>", { r: 0 });
-let Blue = Teams.Get("blue"), Red = Teams.Get("red"), Banned = Teams.Get("banned");
-Blue.Spawns.SpawnPointsGroups.Add(1);
-Red.Spawns.SpawnPointsGroups.Add(2);
+let b_team = Teams.Get("blue"), r_team = Teams.Get("red"), banned = Teams.Get("banned");
+b_team.Spawns.SpawnPointsGroups.Add(1);
+r_team.Spawns.SpawnPointsGroups.Add(2);
 Banned.Spawns.CustomSpawnPoints.Add(100000, 100000, 100000, 1);
 Banned.Damage.DamageIn.Value = false;
 
-Blue.Build.BlocksSet.Value = BuildBlocksSet.Blue;
-Red.Build.BlocksSet.Value = BuildBlocksSet.Red;
+b_team.Build.BlocksSet.Value = BuildBlocksSet.Blue;
+r_team.Build.BlocksSet.Value = BuildBlocksSet.Red;
 
 Teams.OnAddTeam.Add(function (t) {
 	if (t == Banned) t.Properties.Get("points").Value = -10000;
@@ -77,10 +77,10 @@ Ui.GetContext().TeamProp2.Value = {
 	Team: "blue", Prop: "hint_all"
 };
 
-Red.Ui.TeamProp1.Value = {
+r_team.Ui.TeamProp1.Value = {
 	Team: "red", Prop: "hint"
 };
-Blue.Ui.TeamProp2.Value = {
+b_team.Ui.TeamProp2.Value = {
 	Team: "blue", Prop: "hint"
 };
 
@@ -152,11 +152,11 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		p.Build.BuildRangeEnable.Value = true;
 	}
 
-	const b_c = Blue.Count - (p.Team == Blue ? 1 : 0),
-		r_c = Red.Count - (p.Team == Red ? 1 : 0);
+	const b_c = b_team.Count - (p.Team == b_team ? 1 : 0),
+		r_c = r_team.Count - (p.Team == r_team ? 1 : 0);
 	if (b_c != r_c) {
-		if (b_c < r_c) Blue.Add(p);
-		else if (b_c > r_c) Red.Add(p);
+		if (b_c < r_c) b_team.Add(p);
+		else if (b_c > r_c) r_team.Add(p);
 	}
 	else t.Add(p);
 });
@@ -472,12 +472,12 @@ ban.OnEnter.Add(function (p, a) {
 			plr.Properties.Get("banned_hint").Value = hint;
 			p.Ui.Hint.Value = "Zaбанен " + plr.NickName + " id: " + plr.Id;
 		} else {
-			const b_c = Blue.Count,
-				r_c = Red.Count;
+			const b_c = b_team.Count,
+				r_c = r_team.Count;
 			if (b_c != r_c) {
-				if (b_c < r_c) Blue.Add(plr);
-				else if (b_c > r_c) Red.Add(plr);
-			} else Blue.Add(plr);
+				if (b_c < r_c) b_team.Add(plr);
+				else if (b_c > r_c) r_team.Add(plr);
+			} else b_team.Add(plr);
 			plr.Properties.Get("banned").Value = false;
 			p.Ui.Hint.Value = "Раzбанен " + plr.NickName + " id: " + plr.Id;;
 			plr.Ui.Hint.Reset();
@@ -488,12 +488,12 @@ ban.OnEnter.Add(function (p, a) {
 autobridge.OnEnter.Add(function (p, a) {
 	if (p.Properties.Get("autobridge_perm").Value) {
 		p.Ui.Hint.Value = "Пермаментный автомост поставлен";
-		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "") + "abid"), p.Team == Red ? 737 : 857);
+		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "") + "abid"), p.Team == r_team ? 737 : 857);
 		return p.Properties.Get("autobridge_perm").Value = false;
 	}
 	else if (p.Properties.Get("autobridge").Value) {
 		p.Ui.Hint.Value = "Автомост поставлен";
-		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "") + "abid"), p.Team == Red ? 33 : 28);
+		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "") + "abid"), p.Team == r_team ? 33 : 28);
 		return p.Properties.Get("autobridge").Value = false;
 	}
 	else p.Ui.Hint.Value = "Купите автомост чтобы поставить его";
@@ -531,15 +531,15 @@ update_timer.OnTimer.Add(function () {
 	let blue_points = 0, red_points = 0;
 	if (capture_blue.Count > 0 || capture_red.Count > 0) {
 		let blue_plrs = capture_blue.GetPlayers(), red_plrs = capture_red.GetPlayers();
-		red_plrs.forEach(function(plr) {if (plr.Team == Blue) red_points++;});
-		blue_plrs.forEach(function(plr) {if (plr.Team == Red) blue_points++;});
+		red_plrs.forEach(function(plr) {if (plr.Team == b_team) red_points++;});
+		blue_plrs.forEach(function(plr) {if (plr.Team == r_team) blue_points++;});
 	}
 	if (state.Value == "third") {
 		blue_points = blue_points * 2 + 1;
 		red_points = red_points * 2 + 1;
 	}
-	Blue.Properties.Get("points").Value -= blue_points;
-	Red.Properties.Get("points").Value -= red_points;
+	b_team.Properties.Get("points").Value -= blue_points;
+	r_team.Properties.Get("points").Value -= red_points;
 });
 
 Timers.OnTeamTimer.Add(function (_t) {
@@ -603,9 +603,8 @@ function FirstPhase() {
 	state.Value = "first";
 
 	Spawns.GetContext().Enable = true;
-	Blue.Spawns.Spawn();
-	Red.Spawns.Spawn();
-
+	b_team.Spawns.Spawn();
+	r_team.Spawns.Spawn();
 
 	Inventory.GetContext().Main.Value = false;
 	Inventory.GetContext().Secondary.Value = false;
@@ -647,8 +646,8 @@ function ClearProps() {
 }
 
 function End() {
-	Ui.GetContext().Hint.Value = "Конец игры" + Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья" : "Красные победили";
-	msg.Show("<i>" + (Blue.Properties.Get("points").Value > Red.Properties.Get("points").Value ? "Синие победили</i>" : Blue.Properties.Get("points").Value == Red.Properties.Get("points").Value ? "Ничья</i>" : "Красные победили</i>"), "<B><color=red>Area</color><color=blue>Wars</color> v.1.7global\nот just_qstn</B>");
+	Ui.GetContext().Hint.Value = "Конец игры" + b_team.Properties.Get("points").Value > r_team.Properties.Get("points").Value ? "Синие победили</i>" : b_team.Properties.Get("points").Value == r_team.Properties.Get("points").Value ? "Ничья" : "Красные победили";
+	msg.Show("<i>" + (b_team.Properties.Get("points").Value > r_team.Properties.Get("points").Value ? "Синие победили</i>" : b_team.Properties.Get("points").Value == r_team.Properties.Get("points").Value ? "Ничья</i>" : "Красные победили</i>"), "<B><color=red>Area</color><color=blue>Wars</color> v.1.7global\nот just_qstn</B>");
 	state.Value = "end";
 	Damage.GetContext().DamageOut.Value = false;
 
@@ -658,10 +657,10 @@ function End() {
 	Ui.GetContext().TeamProp2.Value = {
 		Team: "blue", Prop: "hint_reset"
 	};
-	Red.Ui.TeamProp1.Value = {
+	r_team.Ui.TeamProp1.Value = {
 		Team: "red", Prop: "hint_reset"
 	};
-	Blue.Ui.TeamProp2.Value = {
+	b_team.Ui.TeamProp2.Value = {
 		Team: "blue", Prop: "hint_reset"
 	};
 
