@@ -1,6 +1,10 @@
-// AreaWars v1.7.2
-// от игрока just_qstn
-// Все права защишены - All rights reversed
+// AreaWars v1.8
+/* MIT License Copyright (c) 2023 just_qstn (vk, tg, discord: just_qstn. old discord: дурак и психопат!#5687)
+    
+Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и сопутствующей документации (далее — Программное обеспечение), безвозмездно использовать Программное обеспечение без ограничений, включая неограниченное право на использование, копирование, изменение, слияние, публикацию, распространение, сублицензирование и/или продажу копий Программного обеспечения, а также лицам, которым предоставляется данное Программное обеспечение, при соблюдении следующих условий:
+Указанное выше уведомление об авторском праве и данные условия должны быть включены во все копии или значимые части данного Программного обеспечения.
+ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, ЯВНО ВЫРАЖЕННЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ, СООТВЕТСТВИЯ ПО ЕГО КОНКРЕТНОМУ НАЗНАЧЕНИЮ И ОТСУТСТВИЯ НАРУШЕНИЙ, НО НЕ ОГРАНИЧИВАЯСЬ ИМИ. НИ В КАКОМ СЛУЧАЕ АВТОРЫ ИЛИ ПРАВООБЛАДАТЕЛИ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ПО КАКИМ-ЛИБО ИСКАМ, ЗА УЩЕРБ ИЛИ ПО ИНЫМ ТРЕБОВАНИЯМ, В ТОМ ЧИСЛЕ, ПРИ ДЕЙСТВИИ КОНТРАКТА, ДЕЛИКТЕ ИЛИ ИНОЙ СИТУАЦИИ, ВОЗНИКШИМ ИЗ-ЗА ИСПОЛЬЗОВАНИЯ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ИНЫХ ДЕЙСТВИЙ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ. 
+Если вам лень читать: используешь мой код - скопируй этот текст и вставь его к себе в начало режима*/
 
 
 
@@ -8,18 +12,18 @@
 
 // Константы
 const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "", DEFAULT_PROPS = {
-	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint"],
-	Values: [0, 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун"]
+	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
+	Values: [0, 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
 }, DEFAULT_TEAM_PROPS = {
-	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level"],
-	Values: [125, 100, 1, 1, 0, 150, 1]
+	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold"],
+	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
 }, VESTS_VALUE = [
 	200, 350, 500
 ],
 	cmd = AreaPlayerTriggerService.Get("cmd"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold"),
 	capture_blue = AreaPlayerTriggerService.Get("capture_blue"), capture_red = AreaPlayerTriggerService.Get("capture_red"), shop_next = AreaPlayerTriggerService.Get("shop_next"),
 	shop_prev = AreaPlayerTriggerService.Get("shop_prev"), shop_buy = AreaPlayerTriggerService.Get("shop_buy"), nuke = AreaPlayerTriggerService.Get("nuke"),
-	ban = AreaPlayerTriggerService.Get("ban"), autobridge = AreaPlayerTriggerService.Get("autobridge");
+	ban = AreaPlayerTriggerService.Get("ban"), autobridge = AreaPlayerTriggerService.Get("autobridge"), output = AreaPlayerTriggerService.Get("output"), input = AreaPlayerTriggerService.Get("input"), mode = AreaPlayerTriggerService.Get("mode");
 
 // Переменные
 var props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
@@ -48,6 +52,9 @@ AddArea("shop_buy", ["buy"], rgb(255, 255, 0));
 AddArea("nuke", ["nuke"], { r: 0.67, b: 0.15 }, false, false);
 AddArea("ban", ["ban"], rgb(255, 255, 255), true, true);
 AddArea("autobridge", ["ab"], rgb(255, 255, 255), true, true);
+AddArea("input", ["input"], rgb(0, 255, 0), true, true);
+AddArea("output", ["output"], rgb(255, 0, 0), true, true);
+AddArea("mode", ["mode"], rgb(255, 255, 0), true, true);
 
 // Создание команд
 Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.7.2</i>", { r: 0.15, b: 0.67 });
@@ -235,7 +242,7 @@ Properties.OnTeamProperty.Add(function (c, v) {
 		regen_timer = t.Timers.Get("regen").IsStarted ? "\nТаймер реген.: " + t.Timers.Get("regen").LapsedTime.toFixed() : "",
 		defense_timer = t.Timers.Get("defense").IsStarted ? "\nТаймер защиты: " + t.Timers.Get("defense").LapsedTime.toFixed() : "";
 
-	t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: " + t.Properties.Get("silver_booster").Value + "/" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + regen_timer + defense_timer + "</B>";
+	t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: " + t.Properties.Get("silver_booster").Value + "/" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + regen_timer + defense_timer + "\nS: " + t.Properties.Get("silver").Value + " / G: " + t.Properties.Get("gold").Value + "</B>";
 	t.Properties.Get("hint_all").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color></B>";
 	if (t.Properties.Get("points").Value <= 0 && (state.Value == "first" || state.Value == "second" || state.Value == "third")) End();
 });
@@ -501,6 +508,30 @@ autobridge.OnEnter.Add(function (p, a) {
 
 autobridge.OnExit.Add(function (p) {
 	p.Ui.Hint.Reset();
+});
+
+mode.OnEnter.Add(function(p) {
+    if (p.Properties.Get("mode").Value == "gold") p.Properties.Get("mode").Value = "silver";
+    else p.Properties.Get("mode").Value = "gold";
+    p.Ui.Hint.Value = "Режим: " + p.Properties.Get("mode").Value;
+});
+
+input.OnEnter.Add(function(p) {
+    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 1;
+    if (p.Properties.Get(_mode).Value >= needed) {
+        p.Properties.Get(_mode).Value -= needed;
+        p.Team.Properties.Get(_mode).Value += needed;
+        p.Ui.Hint.Value = "Вы успешно внесли деньги";
+    } else p.Ui.Hint.Value = "Не хватает денег!";
+});
+
+output.OnEnter.Add(function(p) {
+    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 1;
+    if (p.Team.Properties.Get(_mode).Value >= needed) {
+        p.Properties.Get(_mode).Value += needed;
+        p.Team.Properties.Get(_mode).Value -= needed;
+        p.Ui.Hint.Value = "Вы успешно забрали деньги";
+    } else p.Ui.Hint.Value = "Не хватает денег в казне!";
 });
 
 // Таймеры
