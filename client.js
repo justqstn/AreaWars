@@ -311,7 +311,7 @@ function prd_MaxPoints(plus, limit, cost, currency) {
 }
 
 function prd_Boosters(type, plus, limit, cost, currency) {
-	this.Name = "+" + plus + " к бустеру" + (type == "gold_booster" ? " золота" : " серебра" + " (лимит " + limit + " * уровень базы)");
+	this.Name = "+" + plus + " к бустеру" + (type == "gold_booster" ? " золота" : " серебра") + " (лимит " + limit + " * уровень базы)";
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return p.Team.Properties.Get(type).Value < limit * p.Team.Properties.Get("level").Value; };
@@ -343,11 +343,11 @@ function prd_Exp(plus, cost, currency) {
 }
 
 const Products = [
-	new prd_Inventory("Build", 500, "silver"), new prd_Inventory("Secondary", 3000, "silver"), new prd_Inventory("Main", 1.5, "gold"), new prd_Regen(10, 15000, "silver"), new prd_Regen(30, 7, "gold"),
-	new prd_Saves("silver", 50000, "silver"), new prd_Saves("gold", 40, "gold"), new prd_Vests(1, 12000), new prd_Vests(2, 50000), new prd_Vests(3, 82000), new prd_MaxPoints(5, 150, 3, "gold"), new prd_MaxPoints(15, 150, 8, "gold"),
-	new prd_Boosters("silver_booster", 0.25, 3, 20000, "silver"), new prd_Boosters("silver_booster", 0.5, 3, 3, "gold"), new prd_Boosters("gold_booster", 0.1, 2, 50000, "silver"), new prd_Boosters("gold_booster", 0.2, 2, 7, "gold"),
+	new prd_Inventory("Build", 500, "silver"), new prd_Inventory("Secondary", 3000, "silver"), new prd_Inventory("Main", 150, "gold"), new prd_Regen(10, 15000, "silver"), new prd_Regen(30, 700, "gold"),
+	new prd_Saves("silver", 50000, "silver"), new prd_Saves("gold", 4000, "gold"), new prd_Vests(1, 12000), new prd_Vests(2, 50000), new prd_Vests(3, 82000), new prd_MaxPoints(5, 150, 300, "gold"), new prd_MaxPoints(15, 150, 800, "gold"),
+	new prd_Boosters("silver_booster", 0.25, 3, 20000, "silver"), new prd_Boosters("silver_booster", 0.5, 3, 300, "gold"), new prd_Boosters("gold_booster", 0.1, 2, 50000, "silver"), new prd_Boosters("gold_booster", 0.2, 2, 700, "gold"),
 	{
-		Name: "Аптечка (+15 * уровень базы)", Currency: "gold", Cost: 7.5, Error: "Достигнут лимит очков",
+		Name: "Аптечка (+15 * уровень базы)", Currency: "gold", Cost: 750, Error: "Достигнут лимит очков",
 		Conditions: function (p) {
 			return p.Team.Properties.Get("points").Value < p.Team.Properties.Get("max_points").Value;
 		},
@@ -355,7 +355,7 @@ const Products = [
 			p.Team.Properties.Get("points").Value += 35 * p.Team.Properties.Get("level").Value;
 			if (p.Team.Properties.Get("points").Value > p.Team.Properties.Get("max_points").Value) p.Team.Properties.Get("points").Value = p.Team.Properties.Get("max_points").Value;
 		}
-	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 20, "gold"), new prd_Gold(5, 25000), new prd_Gold(15, 67000), new prd_Gold(40, 130000),
+	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 15000, "gold"), new prd_Gold(5, 25000), new prd_Gold(15, 67000), new prd_Gold(40, 130000),
 	{
 		Name: "Беск. блоки", Currency: "silver", Cost: 20000, Error: "Товар уже куплен",
 		Conditions: function (p) {
@@ -385,7 +385,7 @@ const Products = [
 		}
 	},
 	{
-		Name: "Старткит (нужен 3 уровень базы)", Currency: "gold", Cost: 25, Error: "Уровень базы ниже 3, или товар уже куплен",
+		Name: "Старткит (нужен 3 уровень базы)", Currency: "gold", Cost: 2500, Error: "Уровень базы ниже 3, или товар уже куплен",
 		Conditions: function (p) {
 			return p.Team.Properties.Get("level").Value >= 3 && !p.Team.Inventory.Secondary.Value;
 		},
@@ -394,19 +394,7 @@ const Products = [
 		}
 	},
 	{
-		Name: "Nuke (нужен 2 уровень базы)", Currency: "gold", Cost: 50, Error: "Уровень базы ниже 2, или Nuke уже активирован",
-		Conditions: function (p) {
-			return p.Team.Properties.Get("level").Value >= 2 && !nukeTimer.IsStarted;
-		},
-		Buy: function (p) {
-			nukeTimer.Restart(90);
-			v_nuke.Enable = true;
-			nuke.Enable = true;
-			nukeTeam.Value = p.Team.Id;
-		}
-	},
-	{
-		Name: "Защита 60с (нужен 2 уровень базы)", Currency: "gold", Cost: 30, Error: "Уровень базы ниже 2, или защита уже активирована",
+		Name: "Защита 60с (нужен 2 уровень базы)", Currency: "gold", Cost: 3000, Error: "Уровень базы ниже 2, или защита уже активирована",
 		Conditions: function (p) {
 			return p.Team.Properties.Get("level").Value >= 2 && !p.Team.Timers.Get("defense").IsStarted;
 		},
@@ -414,7 +402,7 @@ const Products = [
 			if (!p.Team.Timers.Get("update").IsStarted) p.Team.Timers.Get("update").RestartLoop(1);
 			p.Team.Timers.Get("defense").Restart(60);
 		}
-	}, new prd_Exp(7, 20000, "silver"), new prd_Exp(12, 3, "gold")
+	}, new prd_Exp(7, 20000, "silver"), new prd_Exp(12, 300, "gold")
 ];
 
 // Триггеры и зоны
@@ -438,7 +426,7 @@ silver.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
 
 gold.OnEnter.Add(function (p, a) {
 	p.Timers.Get("gold").RestartLoop(1);
-	p.Properties.Get("gold_reward").Value = Number(a.Name.replace("g", "")) * 0.05;
+	p.Properties.Get("gold_reward").Value = Number(a.Name.replace("g", "")) * 5;
 	p.Ui.Hint.Value = "Зона золота (1с)";
 });
 gold.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
@@ -520,7 +508,7 @@ mode.OnExit.Add(function(p) {
 });
 
 input.OnEnter.Add(function(p) {
-    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 1;
+    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 100;
     if (p.Properties.Get(_mode).Value >= needed) {
         p.Properties.Get(_mode).Value -= needed;
         p.Team.Properties.Get(_mode).Value += needed;
@@ -532,7 +520,7 @@ input.OnExit.Add(function(p) {
 });
 
 output.OnEnter.Add(function(p) {
-    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 1;
+    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 100;
     if (p.Team.Properties.Get(_mode).Value >= needed) {
         p.Properties.Get(_mode).Value += needed;
         p.Team.Properties.Get(_mode).Value -= needed;
@@ -591,7 +579,7 @@ Timers.OnTeamTimer.Add(function (_t) {
 		const clr = t.Properties.Get("points").Value > 75 ? "#32CD32" : t.Properties.Get("points").Value <= 75 && t.Properties.Get("points").Value > 30 ? "#FFD700" : "#FF0000",
 			regen_timer = t.Timers.Get("regen").IsStarted ? "\nТаймер реген.: " + t.Timers.Get("regen").LapsedTime.toFixed() : "",
 			defense_timer = t.Timers.Get("defense").IsStarted ? "\nТаймер защиты: " + t.Timers.Get("defense").LapsedTime.toFixed() : "";
-		t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: " + t.Properties.Get("silver_booster").Value + "/" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + regen_timer + defense_timer + "</B>";
+        t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: " + t.Properties.Get("silver_booster").Value + "/" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + regen_timer + defense_timer + "\nS: " + t.Properties.Get("silver").Value + " / G: " + t.Properties.Get("gold").Value + regen_timer + defense_timer + "</B>";
 	}
 });
 
@@ -607,7 +595,7 @@ Timers.OnPlayerTimer.Add(function (t) {
 			break;
 		case "gold":
 			if (!gold.Contains(p)) return t.Stop();
-			p.Properties.Get("gold").Value = Math.round((p.Properties.Get("gold").Value + p.Properties.Get("gold_reward").Value * p.Team.Properties.Get("gold_booster").Value) * 100) / 100;
+			p.Properties.Get("gold").Value + Number(p.Properties.Get("gold_reward").Value * p.Team.Properties.Get("gold_booster").Value);
 			break;
 	}
 });
