@@ -57,9 +57,9 @@ AddArea("output", ["output"], rgb(255, 0, 0), true, true);
 AddArea("mode", ["mode"], rgb(255, 255, 0), true, true);
 
 // Создание команд
-Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.7.2</i>", { r: 0.15, b: 0.67 });
-Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.7.2</i>", { r: 0.67, b: 0.15 });
-Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.7.2</i>", { r: 0 });
+Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.8</i>", { r: 0.15, b: 0.67 });
+Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.8</i>", { r: 0.67, b: 0.15 });
+Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.8</i>", { r: 0 });
 let b_team = Teams.Get("blue"), r_team = Teams.Get("red"), banned = Teams.Get("banned");
 b_team.Spawns.SpawnPointsGroups.Add(1);
 r_team.Spawns.SpawnPointsGroups.Add(2);
@@ -315,7 +315,7 @@ function prd_Boosters(type, plus, limit, cost, currency) {
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return p.Team.Properties.Get(type).Value < limit * p.Team.Properties.Get("level").Value; };
-	this.Buy = function (p) { p.Team.Properties.Get(type).Value = Math.floor((p.Team.Properties.Get(type).Value += 0.5) * 100) / 100; }
+	this.Buy = function (p) { p.Team.Properties.Get(type).Value = Math.floor((p.Team.Properties.Get(type).Value += plus) * 100) / 100; }
 }
 
 function prd_Autobridge(type, cost, currency) {
