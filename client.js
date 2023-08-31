@@ -52,7 +52,7 @@ AddArea("shop_buy", ["buy"], rgb(255, 255, 0));
 AddArea("nuke", ["nuke"], { r: 0.67, b: 0.15 }, false, false);
 AddArea("ban", ["ban"], rgb(255, 255, 255), true, true);
 AddArea("autobridge", ["ab"], rgb(255, 255, 255), true, true);
-AddArea("input", ["input"], rgb(0, 255, 0), true, true);
+AddArea("input", ["input"], rgb(0, 255, 0), true, true);ФЙ
 AddArea("output", ["output"], rgb(255, 0, 0), true, true);
 AddArea("mode", ["mode"], rgb(255, 255, 0), true, true);
 
