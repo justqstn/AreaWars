@@ -668,6 +668,7 @@ function ClearProps() {
 			count++;
 		});
 	}
+    msg.Show(count);
 	state.Value = "clearing";
 	main_timer.Restart(10);
 	Spawns.GetContext().Despawn();
