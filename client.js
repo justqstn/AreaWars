@@ -64,14 +64,14 @@ Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size><
 let b_team = Teams.Get("blue"), r_team = Teams.Get("red"), banned = Teams.Get("banned");
 b_team.Spawns.SpawnPointsGroups.Add(1);
 r_team.Spawns.SpawnPointsGroups.Add(2);
-Banned.Spawns.CustomSpawnPoints.Add(100000, 100000, 100000, 1);
-Banned.Damage.DamageIn.Value = false;
+banned.Spawns.CustomSpawnPoints.Add(100000, 100000, 100000, 1);
+banned.Damage.DamageIn.Value = false;
 
 b_team.Build.BlocksSet.Value = BuildBlocksSet.Blue;
 r_team.Build.BlocksSet.Value = BuildBlocksSet.Red;
 
 Teams.OnAddTeam.Add(function (t) {
-	if (t == Banned) t.Properties.Get("points").Value = -10000;
+	if (t == banned) t.Properties.Get("points").Value = -10000;
 	else DEFAULT_TEAM_PROPS.Names.forEach(function(prop, index) {
 		t.Properties.Get(prop).Value = DEFAULT_TEAM_PROPS.Values[index];
 	});
@@ -137,10 +137,10 @@ Map.OnLoad.Add(function () {
 });
 
 Teams.OnRequestJoinTeam.Add(function (p, t) {
-	if (state.Value == "init" || t == Banned) return;
+	if (state.Value == "init" || t == banned) return;
 	if (p.NickName == p.Id) {
 		p.Ui.Hint.Value = "Вы забанены сервером. Причина: ваш ник это айди или уровень меньше 45";
-		Banned.Add(p);
+		banned.Add(p);
 		p.Spawns.Spawn();
 		p.Spawns.Despawn();
 		return;
@@ -182,7 +182,7 @@ Teams.OnPlayerChangeTeam.Add(function (p) {
 Players.OnPlayerConnected.Add(function (p) {
 	p.Properties.Get("banned").Value = props.Get("banned" + p.id).Value;
 	if (p.Properties.Get("banned").Value) {
-		Banned.Add(p);
+		banned.Add(p);
 		p.Spawns.Spawn();
 		p.Spawns.Despawn();
 		p.Ui.Hint.Value = props.Get("banned_hint" + p.id).Value;
@@ -232,7 +232,7 @@ Damage.OnKill.Add(function (p, k) {
 
 Properties.OnTeamProperty.Add(function (c, v) {
 	const t = c.Team;
-	if (t == Banned) return;
+	if (t == banned) return;
 	if (v.Name == "hint" || v.Name == "hint_all") return;
 	if (v.Name == "xp" && t.Properties.Get("level").Value < 3 && v.Value >= t.Properties.Get("next_xp").Value) {
 		v.Value = v.Value - t.Properties.Get("next_xp").Value;
@@ -473,7 +473,7 @@ ban.OnEnter.Add(function (p, a) {
 		let args = a.Name.split("/"), plr = Players.GetByRoomId(args[0].replace("id", ""));
 		if (!plr.Properties.Get("banned").Value) {
 			plr.Properties.Get("banned").Value = true;
-			Banned.Add(plr);
+			banned.Add(plr);
 			plr.Spawns.Despawn();
 			const hint = "Вы zабанены игроком " + p.NickName + ". Причина: " + args[1];
 			plr.Ui.Hint.Value = hint;
