@@ -1,5 +1,4 @@
-try {
-    // AreaWars v1.8
+// AreaWars v1.8
 /* MIT License Copyright (c) 2023 just_qstn (vk, tg, discord: just_qstn. old discord: дурак и психопат!#5687)
     
 Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и сопутствующей документации (далее — Программное обеспечение), безвозмездно использовать Программное обеспечение без ограничений, включая неограниченное право на использование, копирование, изменение, слияние, публикацию, распространение, сублицензирование и/или продажу копий Программного обеспечения, а также лицам, которым предоставляется данное Программное обеспечение, при соблюдении следующих условий:
@@ -27,7 +26,7 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 	ban = AreaPlayerTriggerService.Get("ban"), autobridge = AreaPlayerTriggerService.Get("autobridge"), output = AreaPlayerTriggerService.Get("output"), input = AreaPlayerTriggerService.Get("input"), mode = AreaPlayerTriggerService.Get("mode");
 
 // Переменные
-var props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
+let props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
 	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [], array_areas = Properties.GetContext().Get("arr");
 
 // Настройки
@@ -517,6 +516,10 @@ mode.OnEnter.Add(function(p) {
     p.Ui.Hint.Value = "Режим: " + p.Properties.Get("mode").Value;
 });
 
+mode.OnExit.Add(function(p) {
+    p.Ui.Hint.Reset();
+});
+
 input.OnEnter.Add(function(p) {
     let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 1;
     if (p.Properties.Get(_mode).Value >= needed) {
@@ -526,6 +529,10 @@ input.OnEnter.Add(function(p) {
     } else p.Ui.Hint.Value = "Не хватает денег!";
 });
 
+input.OnExit.Add(function(p) {
+    p.Ui.Hint.Reset();
+});
+
 output.OnEnter.Add(function(p) {
     let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 1;
     if (p.Team.Properties.Get(_mode).Value >= needed) {
@@ -533,6 +540,10 @@ output.OnEnter.Add(function(p) {
         p.Team.Properties.Get(_mode).Value -= needed;
         p.Ui.Hint.Value = "Вы успешно забрали деньги";
     } else p.Ui.Hint.Value = "Не хватает денег в казне!";
+});
+
+output.OnExit.Add(function(p) {
+    p.Ui.Hint.Reset();
 });
 
 // Таймеры
@@ -699,4 +710,3 @@ function End() {
 	ClearAreas();
 	main_timer.Restart(10);
 }
-} catch(e) {Validate.ReportInvalid(e.name + " " + e.message);}
