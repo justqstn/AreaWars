@@ -13,7 +13,7 @@
 // Константы
 const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "", DEFAULT_PROPS = {
 	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
-	Values: [0, 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
+	Values: [Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
 }, DEFAULT_TEAM_PROPS = {
 	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold"],
 	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
@@ -515,7 +515,6 @@ mode.OnEnter.Add(function(p) {
     else p.Properties.Get("mode").Value = "gold";
     p.Ui.Hint.Value = "Режим: " + p.Properties.Get("mode").Value;
 });
-
 mode.OnExit.Add(function(p) {
     p.Ui.Hint.Reset();
 });
@@ -528,7 +527,6 @@ input.OnEnter.Add(function(p) {
         p.Ui.Hint.Value = "Вы успешно внесли деньги";
     } else p.Ui.Hint.Value = "Не хватает денег!";
 });
-
 input.OnExit.Add(function(p) {
     p.Ui.Hint.Reset();
 });
@@ -541,7 +539,6 @@ output.OnEnter.Add(function(p) {
         p.Ui.Hint.Value = "Вы успешно забрали деньги";
     } else p.Ui.Hint.Value = "Не хватает денег в казне!";
 });
-
 output.OnExit.Add(function(p) {
     p.Ui.Hint.Reset();
 });
@@ -653,7 +650,7 @@ function FirstPhase() {
 	Inventory.GetContext().Secondary.Value = false;
 	Inventory.GetContext().Build.Value = false;
 
-	main_timer.Restart(600);
+	main_timer.Restart(1800);
 }
 
 function SecondPhase() {
@@ -661,13 +658,13 @@ function SecondPhase() {
 	state.Value = "second";
 
 	update_timer.RestartLoop(1);
-	main_timer.Restart(1200);
+	main_timer.Restart(3600);
 }
 
 function ThirdPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 3";
 	state.Value = "third";
-	main_timer.Restart(300);
+	main_timer.Restart(600);
 }
 
 function ClearProps() {
