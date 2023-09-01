@@ -595,7 +595,7 @@ Timers.OnPlayerTimer.Add(function (t) {
 			break;
 		case "gold":
 			if (!gold.Contains(p)) return t.Stop();
-			p.Properties.Get("gold").Value + Number(p.Properties.Get("gold_reward").Value * p.Team.Properties.Get("gold_booster").Value);
+			p.Properties.Get("gold").Value += Number(p.Properties.Get("gold_reward").Value * p.Team.Properties.Get("gold_booster").Value);
 			break;
 	}
 });
