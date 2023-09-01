@@ -287,6 +287,7 @@ function prd_Saves(type, cost, currency) {
 	this.Name = "Сохранение " + (type == "gold" ? "золота" : "серебра");
 	this.Cost = cost;
 	this.Currency = currency;
+	this.Error = "сохранение уже куплено";
 	this.Conditions = function (p) { return !p.Properties.Get("save_" + type).Value; }
 	this.Buy = function (p) { p.Properties.Get("save_" + type).Value = true; }
 }
@@ -295,7 +296,8 @@ function prd_Vests(level, cost) {
 	this.Name = "Бронижилет " + level + "ур";
 	this.Cost = cost;
 	this.Currency = "silver";
-	this.Conditions = function (p) { return !p.contextedProperties.MaxHp.Value < VESTS_VALUE[level - 1]; }
+	this.Conditions = function (p) { return !(p.contextedProperties.MaxHp.Value < VESTS_VALUE[level - 1]) && p.Team.Properties.Get("level").Value >= level };
+	this.Error = "нужен " + level + " уровень базы, или товар уже куплен";
 	this.Buy = function (p) { 
 		p.contextedProperties.MaxHp.Value = VESTS_VALUE[level - 1]; 
 		p.Spawns.Spawn();
@@ -307,7 +309,11 @@ function prd_MaxPoints(plus, limit, cost, currency) {
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return p.Team.Properties.Get("max_points").Value < limit * p.Team.Properties.Get("level").Value; };
-	this.Buy = function (p) { p.Team.Properties.Get("max_points").Value += plus; }
+	this.Error = "достигнут лимит";
+	this.Buy = function (p) { 
+		p.Team.Properties.Get("max_points").Value += plus; 
+		if (p.Team.Properties.Get("max_points").Value < limit * p.Team.Properties.Get("level").Value) p.Team.Properties.Get("max_points").Value = limit * p.Team.Properties.Get("level").Value;
+	}
 }
 
 function prd_Boosters(type, plus, limit, cost, currency) {
@@ -315,13 +321,18 @@ function prd_Boosters(type, plus, limit, cost, currency) {
 	this.Cost = cost;
 	this.Currency = currency;
 	this.Conditions = function (p) { return p.Team.Properties.Get(type).Value < limit * p.Team.Properties.Get("level").Value; };
-	this.Buy = function (p) { p.Team.Properties.Get(type).Value = Math.floor((p.Team.Properties.Get(type).Value += plus) * 100) / 100; }
+	this.Error = "достигнут лимит";
+	this.Buy = function (p) { 
+		p.Team.Properties.Get(type).Value = Math.floor((p.Team.Properties.Get(type).Value += plus) * 100) / 100; 
+		if (p.Team.Properties.Get(type).Value > limit * p.Team.Properties.Get("level").Value) p.Team.Properties.Get(type).Value = limit * p.Team.Properties.Get("level").Value;
+	}
 }
 
 function prd_Autobridge(type, cost, currency) {
 	this.Name = "Автомост " + (type == "autobridge_perm" ? " (пермаментный)" : "");
 	this.Cost = cost;
 	this.Currency = currency;
+	this.Error = "автомост уже куплен";
 	this.Conditions = function (p) { return !p.Properties.Get(type).Value; };
 	this.Buy = function (p) { p.Properties.Get(type).Value = true; }
 }
