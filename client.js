@@ -483,12 +483,12 @@ ban.OnEnter.Add(function (p, a) {
 autobridge.OnEnter.Add(function (p, a) {
 	if (p.Properties.Get("autobridge_perm").Value) {
 		p.Ui.Hint.Value = "Пермаментный автомост поставлен";
-		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "") + "abid"), p.Team == r_team ? 737 : 857);
+		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "abid")), p.Team == r_team ? 737 : 857);
 		return p.Properties.Get("autobridge_perm").Value = false;
 	}
 	else if (p.Properties.Get("autobridge").Value) {
 		p.Ui.Hint.Value = "Автомост поставлен";
-		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "") + "abid"), p.Team == r_team ? 33 : 28);
+		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "abid")), p.Team == r_team ? 33 : 28);
 		return p.Properties.Get("autobridge").Value = false;
 	}
 	else p.Ui.Hint.Value = "Купите автомост чтобы поставить его";
