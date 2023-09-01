@@ -355,7 +355,7 @@ const Products = [
 			p.Team.Properties.Get("points").Value += 35 * p.Team.Properties.Get("level").Value;
 			if (p.Team.Properties.Get("points").Value > p.Team.Properties.Get("max_points").Value) p.Team.Properties.Get("points").Value = p.Team.Properties.Get("max_points").Value;
 		}
-	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 15000, "gold"), new prd_Gold(500, 25000), new prd_Gold(1500, 67000), new prd_Gold(4000, 130000),
+	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 1500, "gold"), new prd_Gold(500, 25000), new prd_Gold(1500, 67000), new prd_Gold(4000, 130000),
 	{
 		Name: "Беск. блоки", Currency: "silver", Cost: 20000, Error: "Товар уже куплен",
 		Conditions: function (p) {
