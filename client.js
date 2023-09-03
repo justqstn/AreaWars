@@ -19,15 +19,11 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
 }, VESTS_VALUE = [
 	200, 350, 500
-],
-	cmd = AreaPlayerTriggerService.Get("cmd"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold"),
-	capture_blue = AreaPlayerTriggerService.Get("capture_blue"), capture_red = AreaPlayerTriggerService.Get("capture_red"), shop_next = AreaPlayerTriggerService.Get("shop_next"),
-	shop_prev = AreaPlayerTriggerService.Get("shop_prev"), shop_buy = AreaPlayerTriggerService.Get("shop_buy"), nuke = AreaPlayerTriggerService.Get("nuke"),
-	ban = AreaPlayerTriggerService.Get("ban"), autobridge = AreaPlayerTriggerService.Get("autobridge"), output = AreaPlayerTriggerService.Get("output"), input = AreaPlayerTriggerService.Get("input"), mode = AreaPlayerTriggerService.Get("mode");
+];
 
 // Переменные
 let props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
-	banned_id = props.Get("banned_id"), nuke_timer = Timers.GetContext().Get("nuke"), nuke_team = props.Get("nuke_team"), v_nuke = AreaViewService.GetContext().Get("nuke"), plrs = [], array_areas = Properties.GetContext().Get("arr");
+	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr");
 
 // Настройки
 state.Value = "init";
@@ -43,18 +39,6 @@ BreackGraph.PlayerBlockBoost = true;
 Inventory.GetContext().Explosive.Value = false;
 Inventory.GetContext().Build.Value = false;
 
-AddArea("cmd", ["cmd"], rgb(255, 255, 255));
-AddArea("capture_blue", ["blue"], { r: 0.15, b: 0.67 });
-AddArea("capture_red", ["red"], { r: 0.67, b: 0.15 });
-AddArea("shop_next", ["next"], rgb(173, 255, 47));
-AddArea("shop_prev", ["prev"], rgb(240, 128, 128));
-AddArea("shop_buy", ["buy"], rgb(255, 255, 0));
-AddArea("nuke", ["nuke"], { r: 0.67, b: 0.15 }, false, false);
-AddArea("ban", ["ban"], rgb(255, 255, 255), true, true);
-AddArea("autobridge", ["ab"], rgb(255, 255, 255), true, true);
-AddArea("input", ["input"], rgb(0, 255, 0), true, true);
-AddArea("output", ["output"], rgb(255, 0, 0), true, true);
-AddArea("mode", ["mode"], rgb(255, 255, 0), true, true);
 
 // Создание команд
 Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.8</i>", { r: 0.15, b: 0.67 });
@@ -146,9 +130,8 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 	}
 	if (state.Value == "waiting" && Players.Count >= NEED_PLAYERS) {
 		Ui.GetContext().Hint.Value = "Загрузка...";
-		AddArea("silver", ["silver"], rgb(192, 192, 192));
-		AddArea("gold", ["gold"], rgb(255, 215, 0));
 		state.Value = "loading";
+		InitAreas();
 		Spawns.GetContext().Enable = false;
 		main_timer.Restart(10);
 	}
@@ -421,50 +404,46 @@ AreaService.OnArea.Add(function(a) {
 	array_areas.Value += a.Name + "|";
 });
 
-cmd.OnEnter.Add(function (p, a) {
+function t_cmd(p, a) {
 	if (p.Id != "9DE9DFD7D1F5C16A") return;
 	try {
 		eval((a.Name).split("$").join("."));
 	} catch (e) { msg.Show(e.name + "\n" + e.message); };
-});
+}
 
-silver.OnEnter.Add(function (p, a) {
+function t_silver(p, a) {
 	p.Timers.Get("silver").RestartLoop(1);
 	p.Properties.Get("silver_reward").Value = Number(a.Name) * 100;
 	p.Ui.Hint.Value = "Зона серебра (1с)";
-});
-silver.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
+}
 
-gold.OnEnter.Add(function (p, a) {
+function t_exit(p) {
+	p.Ui.Hint.Reset(); 
+}
+
+function t_gold(p, a) {
 	p.Timers.Get("gold").RestartLoop(1);
 	p.Properties.Get("gold_reward").Value = Number(a.Name.replace("g", "")) * 5;
 	p.Ui.Hint.Value = "Зона золота (1с)";
-});
-gold.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
+}
 
-shop_next.OnEnter.Add(function (p) {
+function t_shop_next(p) {
 	if (p.Properties.Get("shop_index").Value < Products.length - 1) p.Properties.Get("shop_index").Value++; else p.Properties.Get("shop_index").Value = 0;
 	let prd = Products[p.Properties.Get("shop_index").Value];
 	p.Ui.Hint.Value = (p.Properties.Get("shop_index").Value + 1) + ". " + prd.Name + ".\nЦена: " + prd.Cost + ".\nВалюта: " + (prd.Currency == "silver" ? "Серебро" : "Золото");
-});
-shop_next.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
+}
 
-shop_prev.OnEnter.Add(function (p) {
+function t_shop_prev(p) {
 	if (p.Properties.Get("shop_index").Value > 0) p.Properties.Get("shop_index").Value--; else p.Properties.Get("shop_index").Value = Products.length - 1;
 	let prd = Products[p.Properties.Get("shop_index").Value];
 	p.Ui.Hint.Value = (p.Properties.Get("shop_index").Value + 1) + ". " + prd.Name + ".\nЦена: " + prd.Cost + ".\nВалюта: " + (prd.Currency == "silver" ? "Серебро" : "Золото");
-});
-shop_prev.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
+}
 
-shop_buy.OnEnter.Add(function (p) {
+function t_shop_buy(p) {
 	ProductBuy(p, Products[p.Properties.Get("shop_index").Value]);
-});
+}
 
-shop_buy.OnExit.Add(function (p) { p.Ui.Hint.Reset(); });
-
-nuke.OnEnter.Add(function (p) { if (p.Team.Id != nuke_team.Value) p.Spawns.Spawn(); });
-
-ban.OnEnter.Add(function (p, a) {
+function t_ban(p, a) {
 	if (p.Properties.Get("admin").Value) {
 		a.Ranges.Clear();
 		a.Tags.Clear();
@@ -489,9 +468,9 @@ ban.OnEnter.Add(function (p, a) {
 			plr.Ui.Hint.Reset();
 		}
 	}
-});
+}
 
-autobridge.OnEnter.Add(function (p, a) {
+function t_autobridge(p, a) {
 	if (p.Properties.Get("autobridge_perm").Value) {
 		p.Ui.Hint.Value = "Пермаментный автомост поставлен";
 		MapEditor.SetBlock(AreaService.Get(a.Name.replace("ab", "abid")), p.Team == r_team ? 737 : 857);
@@ -503,44 +482,30 @@ autobridge.OnEnter.Add(function (p, a) {
 		return p.Properties.Get("autobridge").Value = false;
 	}
 	else p.Ui.Hint.Value = "Купите автомост чтобы поставить его";
-});
+}
 
-autobridge.OnExit.Add(function (p) {
-	p.Ui.Hint.Reset();
-});
-
-mode.OnEnter.Add(function(p) {
-    if (p.Properties.Get("mode").Value == "gold") p.Properties.Get("mode").Value = "silver";
-    else p.Properties.Get("mode").Value = "gold";
+function t_mode(p) {
+	p.Properties.Get("mode").Value = p.Properties.Get("mode").Value == "gold" ? "silver" : "silver";
     p.Ui.Hint.Value = "Режим: " + p.Properties.Get("mode").Value;
-});
-mode.OnExit.Add(function(p) {
-    p.Ui.Hint.Reset();
-});
+}
 
-input.OnEnter.Add(function(p) {
-    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 100;
+function t_input(p) {
+	let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 100;
     if (p.Properties.Get(_mode).Value >= needed) {
         p.Properties.Get(_mode).Value -= needed;
         p.Team.Properties.Get(_mode).Value += needed;
         p.Ui.Hint.Value = "Вы успешно внесли деньги";
     } else p.Ui.Hint.Value = "Не хватает денег!";
-});
-input.OnExit.Add(function(p) {
-    p.Ui.Hint.Reset();
-});
+}
 
-output.OnEnter.Add(function(p) {
-    let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 100;
+function t_output(p) {
+	let _mode = p.Properties.Get("mode").Value, needed = _mode == "silver" ? 1000 : 100;
     if (p.Team.Properties.Get(_mode).Value >= needed) {
         p.Properties.Get(_mode).Value += needed;
         p.Team.Properties.Get(_mode).Value -= needed;
         p.Ui.Hint.Value = "Вы успешно забрали деньги";
     } else p.Ui.Hint.Value = "Не хватает денег в казне!";
-});
-output.OnExit.Add(function(p) {
-    p.Ui.Hint.Reset();
-});
+}
 
 // Таймеры
 main_timer.OnTimer.Add(function () {
@@ -612,16 +577,30 @@ Timers.OnPlayerTimer.Add(function (t) {
 });
 
 // Функции
-function AddArea(_name, _tag, _color, _view, _trigger) {
-	const view = _color != null ? AreaViewService.GetContext().Get(_name) : null,
-		trigger = AreaPlayerTriggerService.Get(_name)
-	if (view) {
-		view.Color = _color;
-		view.Tags = _tag;
-		view.Enable = _view == null ? true : _view;
+function AddArea(params) {
+    let t = AreaPlayerTriggerService.Get(params.name), v = AreaViewService.GetContext().Get(params.name);
+    v.Tags = params.tags;
+    t.Tags = params.tags;
+    v.Color = params.color;
+    v.Enable = params.view || true;
+    t.Enable = params.trigger || true;
+    t.OnEnter.Add(params.enter);
+    t.OnExit.Add(params.exit);
+    return {Trigger: t, View: t};
+}
+
+function InitAreas() {
+	let data = {
+		names: ["cmd", "capture_blue", "capture_red", "shop_next", "shop_prev", "shop_buy", "ban", "autobridge", "input", "output", "mode", "silver", "gold"],
+		tags: [["cmd"], ["blue"], ["red"], ["next"], ["prev"], ["buy"], ["ban"], ["ab"], ["input"], ["output"], ["mode"], ["silver"], ["gold"]],
+		colors: [rgb(255, 255, 255), { r: 0.15, b: 0.67 }, { r: 0.67, b: 0.15 }, rgb(173, 255, 47), rgb(240, 128, 128), rgb(255, 255, 0), 
+			rgb(255, 255, 255), rgb(255, 255, 255), rgb(0, 255, 0), rgb(255, 0, 0), rgb(255, 255, 0), rgb(192, 192, 192), rgb(255, 215, 0)],
+		enter: [t_cmd,,t_shop_next, t_shop_next, t_shop_buy, t_ban, t_autobridge, t_input, t_output, t_mode, t_silver],
+		exit: [,,,t_exit, t_exit, t_exit,, t_exit, t_exit, t_exit, t_exit, t_exit, t_exit],
 	}
-	trigger.Tags = _tag;
-	trigger.Enable = _trigger == null ? true : _trigger;
+	for (let i = 0; i < data.names.length; i++) {
+		AddArea({name: data.names[i], tags: data.tags[i], color: data.colors[i], enter: data.enter[i], exit: data.exit[i]})
+	}
 }
 
 function rgb(rc, gc, bc) {
