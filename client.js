@@ -1,4 +1,4 @@
-]// AreaWars v1.8
+// AreaWars v1.8
 /* MIT License Copyright (c) 2023 just_qstn (vk, tg, discord: just_qstn. old discord: дурак и психопат!#5687)
     
 Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и сопутствующей документации (далее — Программное обеспечение), безвозмездно использовать Программное обеспечение без ограничений, включая неограниченное право на использование, копирование, изменение, слияние, публикацию, распространение, сублицензирование и/или продажу копий Программного обеспечения, а также лицам, которым предоставляется данное Программное обеспечение, при соблюдении следующих условий:
@@ -602,7 +602,7 @@ function InitAreas() {
 	AddArea({ name: "output", tags: ["output"], color: rgb(255, 0, 0), enter: t_output, exit: t_exit });
 	AddArea({ name: "mode", tags: ["mode"], color: rgb(255, 255, 0), enter: t_mode, exit: t_exit });
 	AddArea({ name: "silver", tags: ["silver"], color: rgb(192, 192, 192), enter: t_silver, exit: t_exit });
-	AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: с, exit: t_exit });
+	AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: t_gold, exit: t_exit });
 }
 
 function rgb(rc, gc, bc) {
