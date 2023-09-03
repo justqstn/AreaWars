@@ -1,4 +1,4 @@
-// AreaWars v1.8
+]// AreaWars v1.8
 /* MIT License Copyright (c) 2023 just_qstn (vk, tg, discord: just_qstn. old discord: дурак и психопат!#5687)
     
 Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и сопутствующей документации (далее — Программное обеспечение), безвозмездно использовать Программное обеспечение без ограничений, включая неограниченное право на использование, копирование, изменение, слияние, публикацию, распространение, сублицензирование и/или продажу копий Программного обеспечения, а также лицам, которым предоставляется данное Программное обеспечение, при соблюдении следующих условий:
@@ -590,17 +590,19 @@ function AddArea(params) {
 }
 
 function InitAreas() {
-	let data = {
-		names: ["cmd", "capture_blue", "capture_red", "shop_next", "shop_prev", "shop_buy", "ban", "autobridge", "input", "output", "mode", "silver", "gold"],
-		tags: [["cmd"], ["blue"], ["red"], ["next"], ["prev"], ["buy"], ["ban"], ["ab"], ["input"], ["output"], ["mode"], ["silver"], ["gold"]],
-		colors: [rgb(255, 255, 255), { r: 0.15, b: 0.67 }, { r: 0.67, b: 0.15 }, rgb(173, 255, 47), rgb(240, 128, 128), rgb(255, 255, 0), 
-			rgb(255, 255, 255), rgb(255, 255, 255), rgb(0, 255, 0), rgb(255, 0, 0), rgb(255, 255, 0), rgb(192, 192, 192), rgb(255, 215, 0)],
-		enter: [t_cmd,,t_shop_next, t_shop_next, t_shop_buy, t_ban, t_autobridge, t_input, t_output, t_mode, t_silver],
-		exit: [,,,t_exit, t_exit, t_exit,, t_exit, t_exit, t_exit, t_exit, t_exit, t_exit],
-	}
-	for (let i = 0; i < data.names.length; i++) {
-		AddArea({name: data.names[i], tags: data.tags[i], color: data.colors[i], enter: data.enter[i], exit: data.exit[i]})
-	}
+	AddArea({ name: "cmd", tags: ["cmd"], color: rgb(255, 255, 255), enter: t_cmd })
+	AddArea({ name: "capture_blue", tags: ["blue"], color: { r: 0.15, b: 0.67 } });
+	AddArea({ name: "capture_red", tags: ["red"], color: { r: 0.67, b: 0.15 } });
+	AddArea({ name: "shop_next", tags: ["next"], color: rgb(173, 255, 47), enter: t_shop_next, exit: t_exit });
+	AddArea({ name: "shop_prev", tags: ["prev"], color: rgb(240, 128, 128), enter: t_shop_prev, exit: t_exit });
+	AddArea({ name: "shop_buy", tags: ["buy"], color: rgb(255, 255, 0), enter: t_shop_buy, exit: t_exit });
+	AddArea({ name: "ban", tags: ["ban"], color: rgb(255, 255, 255), enter: t_ban });
+	AddArea({ name: "autobridge", tags: ["ab"], color: rgb(255, 255, 255), enter: t_autobridge, exit: t_exit });
+	AddArea({ name: "input", tags: ["input"], color: rgb(0, 255, 0), enter: t_input, exit: t_exit });
+	AddArea({ name: "output", tags: ["output"], color: rgb(255, 0, 0), enter: t_output, exit: t_exit });
+	AddArea({ name: "mode", tags: ["mode"], color: rgb(255, 255, 0), enter: t_mode, exit: t_exit });
+	AddArea({ name: "silver", tags: ["silver"], color: rgb(192, 192, 192), enter: t_silver, exit: t_exit });
+	AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: с, exit: t_exit });
 }
 
 function rgb(rc, gc, bc) {
