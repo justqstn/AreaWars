@@ -23,7 +23,7 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 
 // Переменные
 let props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
-	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr");
+	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold");
 
 // Настройки
 state.Value = "init";
@@ -290,7 +290,7 @@ function prd_Vests(level, cost) {
 	this.Name = "Бронижилет " + level + "ур";
 	this.Cost = cost;
 	this.Currency = "silver";
-	this.Conditions = function (p) { return !(p.contextedProperties.MaxHp.Value < VESTS_VALUE[level - 1]) && p.Team.Properties.Get("level").Value >= level };
+	this.Conditions = function (p) { return p.contextedProperties.MaxHp.Value < VESTS_VALUE[level - 1] && p.Team.Properties.Get("level").Value >= level };
 	this.Error = "нужен " + level + " уровень базы, или товар уже куплен";
 	this.Buy = function (p) { 
 		p.contextedProperties.MaxHp.Value = VESTS_VALUE[level - 1]; 
