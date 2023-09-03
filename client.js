@@ -30,6 +30,18 @@ state.Value = "init";
 array_areas.Value = "";
 banned_id.Value = "";
 
+AddArea({ name: "cmd", tags: ["cmd"], color: rgb(255, 255, 255), enter: t_cmd })
+AddArea({ name: "capture_blue", tags: ["blue"], color: { r: 0.15, b: 0.67 } });
+AddArea({ name: "capture_red", tags: ["red"], color: { r: 0.67, b: 0.15 } });
+AddArea({ name: "shop_next", tags: ["next"], color: rgb(173, 255, 47), enter: t_shop_next, exit: t_exit });
+AddArea({ name: "shop_prev", tags: ["prev"], color: rgb(240, 128, 128), enter: t_shop_prev, exit: t_exit });
+AddArea({ name: "shop_buy", tags: ["buy"], color: rgb(255, 255, 0), enter: t_shop_buy, exit: t_exit });
+AddArea({ name: "ban", tags: ["ban"], color: rgb(255, 255, 255), enter: t_ban });
+AddArea({ name: "autobridge", tags: ["ab"], color: rgb(255, 255, 255), enter: t_autobridge, exit: t_exit });
+AddArea({ name: "input", tags: ["input"], color: rgb(0, 255, 0), enter: t_input, exit: t_exit });
+AddArea({ name: "output", tags: ["output"], color: rgb(255, 0, 0), enter: t_output, exit: t_exit });
+AddArea({ name: "mode", tags: ["mode"], color: rgb(255, 255, 0), enter: t_mode, exit: t_exit });
+
 Ui.GetContext().MainTimerId.Value = main_timer.Id;
 Spawns.GetContext().RespawnTime.Value = 15;
 
@@ -131,17 +143,16 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 	if (state.Value == "waiting" && Players.Count >= NEED_PLAYERS) {
 		Ui.GetContext().Hint.Value = "Загрузка...";
 		state.Value = "loading";
-		InitAreas();
+		AddArea({ name: "silver", tags: ["silver"], color: rgb(192, 192, 192), enter: t_silver, exit: t_exit });
+		AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: t_gold, exit: t_exit });
 		Spawns.GetContext().Enable = false;
 		main_timer.Restart(10);
 	}
-
 	if (ADMINS_ID.search(p.Id) != -1) {
 		p.Properties.Get("admin").Value = true;
 		p.Properties.Get("adm_index").Value = 0;
 		p.Build.BuildRangeEnable.Value = true;
 	}
-
 	const b_c = b_team.Count - (p.Team == b_team ? 1 : 0),
 		r_c = r_team.Count - (p.Team == r_team ? 1 : 0);
 	if (b_c != r_c) {
@@ -587,22 +598,6 @@ function AddArea(params) {
     t.OnEnter.Add(params.enter);
     t.OnExit.Add(params.exit);
     return {Trigger: t, View: t};
-}
-
-function InitAreas() {
-	AddArea({ name: "cmd", tags: ["cmd"], color: rgb(255, 255, 255), enter: t_cmd })
-	AddArea({ name: "capture_blue", tags: ["blue"], color: { r: 0.15, b: 0.67 } });
-	AddArea({ name: "capture_red", tags: ["red"], color: { r: 0.67, b: 0.15 } });
-	AddArea({ name: "shop_next", tags: ["next"], color: rgb(173, 255, 47), enter: t_shop_next, exit: t_exit });
-	AddArea({ name: "shop_prev", tags: ["prev"], color: rgb(240, 128, 128), enter: t_shop_prev, exit: t_exit });
-	AddArea({ name: "shop_buy", tags: ["buy"], color: rgb(255, 255, 0), enter: t_shop_buy, exit: t_exit });
-	AddArea({ name: "ban", tags: ["ban"], color: rgb(255, 255, 255), enter: t_ban });
-	AddArea({ name: "autobridge", tags: ["ab"], color: rgb(255, 255, 255), enter: t_autobridge, exit: t_exit });
-	AddArea({ name: "input", tags: ["input"], color: rgb(0, 255, 0), enter: t_input, exit: t_exit });
-	AddArea({ name: "output", tags: ["output"], color: rgb(255, 0, 0), enter: t_output, exit: t_exit });
-	AddArea({ name: "mode", tags: ["mode"], color: rgb(255, 255, 0), enter: t_mode, exit: t_exit });
-	AddArea({ name: "silver", tags: ["silver"], color: rgb(192, 192, 192), enter: t_silver, exit: t_exit });
-	AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: t_gold, exit: t_exit });
 }
 
 function rgb(rc, gc, bc) {
