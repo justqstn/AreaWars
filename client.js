@@ -163,14 +163,16 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 });
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
-	p.Spawns.Spawn();
-	p.Properties.Get("rid").Value = p.IdInRoom;
-	if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
-		if (save.Value == null) p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index];
-		else p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index];
-	});
-	props.Get(p.Id + "save").Value = null;
-	p.Properties.Get("loaded").Value = true;
+	try {
+		p.Spawns.Spawn();
+		p.Properties.Get("rid").Value = p.IdInRoom;
+		if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
+			if (save.Value == null) p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index];
+			else p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index];
+		});
+		props.Get(p.Id + "save").Value = null;
+		p.Properties.Get("loaded").Value = true;
+	} catch (e) { msg.Show(e.name + " " + e.message) }
 });
 
 Players.OnPlayerConnected.Add(function (p) {
