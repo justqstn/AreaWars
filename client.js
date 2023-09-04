@@ -166,7 +166,7 @@ Teams.OnPlayerChangeTeam.Add(function (p) {
 	p.Spawns.Spawn();
 	p.Properties.Get("rid").Value = p.IdInRoom;
 	if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
-		p.Properties.Get(prop).Value = props.Get(prop + p.Id).Value || DEFAULT_PROPS.Values[index];
+		p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index] || DEFAULT_PROPS.Values[index];
 		props.Get(prop + p.Id).Value = null;
 		p.Properties.Get("loaded").Value = true;
 	});
@@ -183,9 +183,11 @@ Players.OnPlayerConnected.Add(function (p) {
 });
 
 Players.OnPlayerDisconnected.Add(function (p) {
+	let arr = [];
 	DEFAULT_PROPS.Names.forEach(function (prop) {
-		props.Get(prop+ p.id).Value = p.Properties.Get(prop).Value;
+		arr.push(p.Properties.Get(prop).Value);
 	});
+	props.Get(p.Id + "save").Value = arr;
 });
 
 Damage.OnDeath.Add(function (p) {
