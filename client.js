@@ -41,6 +41,8 @@ AddArea({ name: "autobridge", tags: ["ab"], color: rgb(255, 255, 255), enter: t_
 AddArea({ name: "input", tags: ["input"], color: rgb(0, 255, 0), enter: t_input, exit: t_exit });
 AddArea({ name: "output", tags: ["output"], color: rgb(255, 0, 0), enter: t_output, exit: t_exit });
 AddArea({ name: "mode", tags: ["mode"], color: rgb(255, 255, 0), enter: t_mode, exit: t_exit });
+AddArea({ name: "silver", tags: ["silver"], color: rgb(192, 192, 192), enter: t_silver, exit: t_exit });
+AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: t_gold, exit: t_exit });
 
 Ui.GetContext().MainTimerId.Value = main_timer.Id;
 Spawns.GetContext().RespawnTime.Value = 15;
@@ -133,6 +135,7 @@ Map.OnLoad.Add(function () {
 
 Teams.OnRequestJoinTeam.Add(function (p, t) {
 	if (state.Value == "init" || t == banned) return;
+
 	if (p.NickName == p.Id) {
 		p.Ui.Hint.Value = "Вы забанены сервером. Причина: ваш ник это айди или уровень меньше 45";
 		banned.Add(p);
@@ -140,20 +143,21 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		p.Spawns.Despawn();
 		return;
 	}
-	if (state.Value == "waiting" && Players.Count >= NEED_PLAYERS) {
+
+	if (state.Value == "waiting" && b_team.Count + r_team.Count >= NEED_PLAYERS - 1) {
 		Ui.GetContext().Hint.Value = "Загрузка...";
 		state.Value = "loading";
-		AddArea({ name: "silver", tags: ["silver"], color: rgb(192, 192, 192), enter: t_silver, exit: t_exit });
-		AddArea({ name: "gold", tags: ["gold"], color: rgb(255, 215, 0), enter: t_gold, exit: t_exit });
 		Spawns.GetContext().Enable = false;
 		main_timer.Restart(10);
 	}
+
 	if (ADMINS_ID.search(p.Id) != -1) {
 		p.Properties.Get("admin").Value = true;
 		p.Properties.Get("adm_index").Value = 0;
 		p.Build.BuildRangeEnable.Value = true;
 	}
-	const b_c = b_team.Count - (p.Team == b_team ? 1 : 0),
+
+	let b_c = b_team.Count - (p.Team == b_team ? 1 : 0),
 		r_c = r_team.Count - (p.Team == r_team ? 1 : 0);
 	if (b_c != r_c) {
 		if (b_c < r_c) b_team.Add(p);
@@ -428,9 +432,11 @@ function t_cmd(p, a) {
 }
 
 function t_silver(p, a) {
-	p.Timers.Get("silver").RestartLoop(1);
-	p.Properties.Get("silver_reward").Value = Number(a.Name) * 100;
-	p.Ui.Hint.Value = "Зона серебра (1с)";
+	if (state.Value != "waiting") {
+		p.Timers.Get("silver").RestartLoop(1);
+		p.Properties.Get("silver_reward").Value = Number(a.Name) * 100;
+		p.Ui.Hint.Value = "Зона серебра (1с)";
+	}
 }
 
 function t_exit(p) {
@@ -438,9 +444,11 @@ function t_exit(p) {
 }
 
 function t_gold(p, a) {
-	p.Timers.Get("gold").RestartLoop(1);
-	p.Properties.Get("gold_reward").Value = Number(a.Name.replace("g", "")) * 5;
-	p.Ui.Hint.Value = "Зона золота (1с)";
+	if (state.Value != "waiting") {
+		p.Timers.Get("gold").RestartLoop(1);
+		p.Properties.Get("gold_reward").Value = Number(a.Name.replace("g", "")) * 5;
+		p.Ui.Hint.Value = "Зона золота (1с)";
+	}
 }
 
 function t_shop_next(p) {
@@ -619,7 +627,7 @@ function ClearAreas() {
 }
 
 function FirstPhase() {
-	Ui.GetContext().Hint.Value = "Фаза 1";
+	Ui.GetContext().Hint.Value = "Фаза 1 - развитие.";
 	state.Value = "first";
 
 	Spawns.GetContext().Enable = true;
@@ -630,11 +638,11 @@ function FirstPhase() {
 	Inventory.GetContext().Secondary.Value = false;
 	Inventory.GetContext().Build.Value = false;
 
-	main_timer.Restart(3600);
+	main_timer.Restart(1800);
 }
 
 function SecondPhase() {
-	Ui.GetContext().Hint.Value = "Фаза 2";
+	Ui.GetContext().Hint.Value = "Фаза 2 - основная игра.";
 	state.Value = "second";
 
 	update_timer.RestartLoop(1);
@@ -642,7 +650,7 @@ function SecondPhase() {
 }
 
 function ThirdPhase() {
-	Ui.GetContext().Hint.Value = "Фаза 3";
+	Ui.GetContext().Hint.Value = "Фаза 3 - крах.";
 	state.Value = "third";
 	main_timer.Restart(600);
 }
