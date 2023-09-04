@@ -166,10 +166,11 @@ Teams.OnPlayerChangeTeam.Add(function (p) {
 	p.Spawns.Spawn();
 	p.Properties.Get("rid").Value = p.IdInRoom;
 	if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
-		p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index] || DEFAULT_PROPS.Values[index];
-		props.Get(prop + p.Id).Value = null;
-		p.Properties.Get("loaded").Value = true;
+		if (save.Value == null) p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index];
+		else p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index];
 	});
+	props.Get(p.Id + "save").Value = null;
+	p.Properties.Get("loaded").Value = true;
 });
 
 Players.OnPlayerConnected.Add(function (p) {
