@@ -19,8 +19,10 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
 }, VESTS_VALUE = [
 	200, 350, 500
-];
-
+], FIRST_PHASE = GameMode.Parameters.GetBool("short") ? 600 : GameMode.Parameters.GetBool("middle") ? 1200 : 1800,
+	SECOND_PHASE = GameMode.Parameters.GetBool("short") ? 1200 : GameMode.Parameters.GetBool("middle") ? 2400 : 3600,
+	THIRD_PHASE = GameMode.Parameters.GetBool("short") ? 300 : GameMode.Parameters.GetBool("middle") ? 600 : 1200;
+ 
 // Переменные
 let props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
 	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold");
@@ -369,7 +371,7 @@ const Products = [
 			p.Team.Properties.Get("points").Value += 35 * p.Team.Properties.Get("level").Value;
 			if (p.Team.Properties.Get("points").Value > p.Team.Properties.Get("max_points").Value) p.Team.Properties.Get("points").Value = p.Team.Properties.Get("max_points").Value;
 		}
-	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 1500, "gold"), new prd_Gold(500, 25000), new prd_Gold(1500, 67000), new prd_Gold(4000, 130000),
+	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 1000, "gold"), new prd_Gold(300, 25000), new prd_Gold(1000, 75000), new prd_Gold(3000, 200000),
 	{
 		Name: "Беск. блоки", Currency: "silver", Cost: 20000, Error: "Товар уже куплен",
 		Conditions: function (p) {
@@ -392,7 +394,7 @@ const Products = [
 	{
 		Name: "Набор строительства", Currency: "silver", Cost: 20000, Error: "Товар уже куплен",
 		Conditions: function (p) {
-			return p.Team.Properties.Get("level").Value >= 3 && !p.Team.Inventory.Build.Value;
+			return !p.Team.Inventory.Build.Value;
 		},
 		Buy: function (p) {
 			p.Team.Inventory.Build.Value = true;
@@ -509,7 +511,7 @@ function t_autobridge(p, a) {
 }
 
 function t_mode(p) {
-	p.Properties.Get("mode").Value = p.Properties.Get("mode").Value == "gold" ? "silver" : "silver";
+	p.Properties.Get("mode").Value = p.Properties.Get("mode").Value == "gold" ? "silver" : "gold";
     p.Ui.Hint.Value = "Режим: " + p.Properties.Get("mode").Value;
 }
 
@@ -638,7 +640,7 @@ function FirstPhase() {
 	Inventory.GetContext().Secondary.Value = false;
 	Inventory.GetContext().Build.Value = false;
 
-	main_timer.Restart(1800);
+	main_timer.Restart(FIRST_PHASE);
 }
 
 function SecondPhase() {
@@ -646,13 +648,13 @@ function SecondPhase() {
 	state.Value = "second";
 
 	update_timer.RestartLoop(1);
-	main_timer.Restart(3600);
+	main_timer.Restart(SECOND_PHASE);
 }
 
 function ThirdPhase() {
 	Ui.GetContext().Hint.Value = "Фаза 3 - крах.";
 	state.Value = "third";
-	main_timer.Restart(600);
+	main_timer.Restart(THIRD_PHASE);
 }
 
 function ClearProps() {
