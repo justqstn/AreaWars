@@ -15,10 +15,25 @@
   "Parameters": {
     "Bool": [
       {
-        "Name": "TestMode",
-        "DisplayName": "Тестовый режим",
+        "Name": "",
+        "DisplayName": "<B><color=red>[!]Внимание[!]</color>\nвыбирайте только один из нижних пунктов</B>",
         "Default": false
-      }
+      },
+      {
+        "Name": "short",
+        "DisplayName": "<B>Короткая игра (10m/20m/5m)</B>",
+        "Default": false
+      },
+      {
+        "Name": "",
+        "DisplayName": "<B>Средняя игра (20m/40m/10m)</B>",
+        "Default": true
+      },
+      {
+        "Name": "",
+        "DisplayName": "<B>Длинная игра (30m/60m/15m)</B>",
+        "Default": false
+      },
     ]
   }
 }
