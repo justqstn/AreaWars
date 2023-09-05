@@ -229,7 +229,7 @@ Damage.OnKill.Add(function (p, k) {
 	}
 	if (k.Team.Timers.Get("defense").LapsedTime <= 0) k.Team.Properties.Get("points").Value -= 1 * (p.IdInRoom != k.IdInRoom ? p.Team.Properties.Get("level").Value : 1);
 	if (p.IdInRoom != k.IdInRoom) {
-		p.Team.Properties.Get("xp").Value += 3;
+		p.Team.Properties.Get("xp").Value += 15;
 		p.Properties.Kills.Value++;
 	}
 });
