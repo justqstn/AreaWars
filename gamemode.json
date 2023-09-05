@@ -25,12 +25,12 @@
         "Default": false
       },
       {
-        "Name": "",
+        "Name": "middle",
         "DisplayName": "<B>Средняя игра (20m/40m/10m)</B>",
         "Default": true
       },
       {
-        "Name": "",
+        "Name": "long",
         "DisplayName": "<B>Длинная игра (30m/60m/15m)</B>",
         "Default": false
       },
