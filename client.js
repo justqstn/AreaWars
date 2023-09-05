@@ -547,8 +547,10 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "third":
 			End();
+			ClearProps()
 			break;
 		case "end":
+			ClearAreas();
 			ClearProps();
 			break;
 		case "clearing":
