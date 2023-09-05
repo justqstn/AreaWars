@@ -25,7 +25,7 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
  
 // Переменные
 let props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
-	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold");
+	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold"), capture_blue = AreaPlayerTriggerService.Get("capture_blue"), capture_red = AreaPlayerTriggerService.Get("capture_red"); 
 
 // Настройки
 state.Value = "init";
@@ -70,7 +70,7 @@ b_team.Build.BlocksSet.Value = BuildBlocksSet.Blue;
 r_team.Build.BlocksSet.Value = BuildBlocksSet.Red;
 
 Teams.OnAddTeam.Add(function (t) {
-	if (t == banned) t.Properties.Get("points").Value = -10000;
+	if (t == banned) t.Properties.Get("points").Value = 10000;
 	else DEFAULT_TEAM_PROPS.Names.forEach(function(prop, index) {
 		t.Properties.Get(prop).Value = DEFAULT_TEAM_PROPS.Values[index];
 	});
