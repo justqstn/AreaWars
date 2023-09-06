@@ -247,7 +247,7 @@ Properties.OnTeamProperty.Add(function (c, v) {
 		regen_timer = t.Timers.Get("regen").IsStarted ? "\nТаймер реген.: " + t.Timers.Get("regen").LapsedTime.toFixed() : "",
 		defense_timer = t.Timers.Get("defense").IsStarted ? "\nТаймер защиты: " + t.Timers.Get("defense").LapsedTime.toFixed() : "";
 
-	t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБустеры: S:" + t.Properties.Get("silver_booster").Value + " / G:" + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + "\nS: " + t.Properties.Get("silver").Value + " / G: " + t.Properties.Get("gold").Value + regen_timer + defense_timer + "</B>";
+	t.Properties.Get("hint").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color>\nБуст. S: " + t.Properties.Get("silver_booster").Value + " / G: " + t.Properties.Get("gold_booster").Value + "\nLVL: " + t.Properties.Get("level").Value + ", XP: " + t.Properties.Get("xp").Value + "/" + t.Properties.Get("next_xp").Value + "\nS: " + t.Properties.Get("silver").Value + " / G: " + t.Properties.Get("gold").Value + regen_timer + defense_timer + "</B>";
 	t.Properties.Get("hint_all").Value = "<B><color=" + clr + ">HP: " + t.Properties.Get("points").Value + "/" + t.Properties.Get("max_points").Value + "</color></B>";
 	if (t.Properties.Get("points").Value <= 0 && (state.Value == "first" || state.Value == "second" || state.Value == "third")) End();
 });
