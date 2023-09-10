@@ -570,8 +570,8 @@ update_timer.OnTimer.Add(function () {
 		blue_points = blue_points * 2 + 1;
 		red_points = red_points * 2 + 1;
 	}
-	b_team.Properties.Get("points").Value -= blue_points * r_team.Properties.Get("lvl").Value;
-	r_team.Properties.Get("points").Value -= red_points * b_team.Properties.Get("lvl").Value;
+	b_team.Properties.Get("points").Value -= blue_points * r_team.Properties.Get("level").Value;
+	r_team.Properties.Get("points").Value -= red_points * b_team.Properties.Get("level").Value;
 });
 
 Timers.OnTeamTimer.Add(function (_t) {
