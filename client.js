@@ -478,8 +478,6 @@ function t_shop_buy(p) {
 
 function t_ban(p, a) {
 	if (p.Properties.Get("admin").Value) {
-		a.Ranges.Clear();
-		a.Tags.Clear();
 		let args = a.Name.split("/"), plr = Players.GetByRoomId(args[0].replace("id", ""));
 		if (!plr.Properties.Get("banned").Value) {
 			plr.Properties.Get("banned").Value = true;
@@ -639,16 +637,18 @@ function rgb(rc, gc, bc) {
 
 function ClearAreas() {
 	AddTimer("clear_arss", {loop: true, time: 2}, function() {
-        for (let e = AreaService.GetEnumerator(); e.moveNext(); ) {
-            if (count > 15) {
-                Timers.GetContext().Get("clear_arss").RestartLoop(2);
-                break;
+        try {
+            for (let e = AreaService.GetEnumerator(); e.moveNext(); ) {
+                if (count > 15) {
+                    Timers.GetContext().Get("clear_arss").RestartLoop(2);
+                    break;
+                }
+                if (e.Current.Tags.Count == 0) continue;
+                e.Current.Tags.Clear();
+                e.Current.Ranges.Clear();
+                count++;
             }
-            if (e.Current.Tags.Count == 0) continue;
-            e.Current.Tags.Clear();
-            e.Current.Ranges.Clear();
-		    count++;
-        }
+        } catch(e) { msg.Show(e.name + " " + e.message); }
     });
 }
 
@@ -697,6 +697,7 @@ function End() {
                 Timers.GetContext().Get("prps").RestartLoop(1);
                 break;
             }
+            if (e.Current.Value == null) continue;
             e.Current.Value = null;
 		    count++;
         }
