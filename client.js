@@ -547,7 +547,7 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "third":
 			End();
-			ClearProps()
+			ClearProps();
 			break;
 		case "end":
 			ClearAreas();
@@ -683,7 +683,6 @@ function ClearProps() {
         for (let e = Players.GetEnumerator(); e.MoveNext();) for (let p = e.Current.Properties.GetProperties().GetEnumerator(); p.MoveNext();) p.Current.Value = null;
     });
 
-    msg.Show(count);
 	state.Value = "clearing";
 	main_timer.Restart(10);
 	Spawns.GetContext().Despawn();
