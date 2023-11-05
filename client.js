@@ -639,15 +639,18 @@ function ClearAreas() {
 	AddTimer("clear_arss", {loop: true, time: 2}, function() {
         try {
             let count = 0;
+            let str = "";
             for (let e = AreaService.GetEnumerator(); e.moveNext(); ) {
                 if (count > 15) {
                     Timers.GetContext().Get("clear_arss").RestartLoop(2);
+                    msg.Show(str);
                     break;
                 }
                 if (e.Current.Tags.Count == 0) continue;
                 e.Current.Tags.Clear();
                 e.Current.Ranges.Clear();
                 count++;
+                str += e.Current.Name + " ";
             }
         } catch(e) { msg.Show(e.name + " " + e.message); }
     });
