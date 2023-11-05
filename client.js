@@ -638,12 +638,18 @@ function rgb(rc, gc, bc) {
 }
 
 function ClearAreas() {
-	let arr = array_areas.Value.split("|");
-	arr.forEach(function(prop){
-		let a = AreaService.Get(prop);
-		a.Tags.Clear();
-		a.Ranges.Clear();
-	});
+	AddTimer("clear_arss", {loop: true, time: 2}, function() {
+        for (let e = AreaService.GetEnumerator(); e.moveNext(); ) {
+            if (count > 15) {
+                Timers.GetContext().Get("clear_arss").RestartLoop(2);
+                break;
+            }
+            if (e.Current.Tags.Count == 0) continue;
+            e.Current.Tags.Clear();
+            e.Current.Ranges.Clear();
+		    count++;
+        }
+    });
 }
 
 function FirstPhase() {
@@ -675,26 +681,6 @@ function ThirdPhase() {
 	main_timer.Restart(THIRD_PHASE);
 }
 
-function ClearProps() {
-    AddTimer("prps", {loop: true, time: 5}, function() { 
-        for (let e = Properties.GetContext().GetProperties().GetEnumerator(); e.moveNext(); ) {
-            if (count > 100) {
-                Timers.GetContext().Get("prps").RestartLoop(1);
-                break;
-            }
-            props.Current.Value = null;
-		    count++;
-        }
-    });
-
-    AddTimer("p_prps", {loop: false, time: 3}, function() { 
-        for (let e = Players.GetEnumerator(); e.MoveNext();) for (let p = e.Current.Properties.GetProperties().GetEnumerator(); p.MoveNext();) p.Current.Value = null;
-    });
-
-	main_timer.Restart(10);
-	Spawns.GetContext().Despawn();
-}
-
 function End() {
 	Ui.GetContext().Hint.Value = "Конец игры" + b_team.Properties.Get("points").Value > r_team.Properties.Get("points").Value ? "Синие победили</i>" : b_team.Properties.Get("points").Value == r_team.Properties.Get("points").Value ? "Ничья" : "Красные победили";
 	state.Value = "end";
@@ -705,6 +691,22 @@ function End() {
 	r_team.Ui.TeamProp1.Value = { Team: "red", Prop: "hint_reset" };
 	b_team.Ui.TeamProp2.Value = { Team: "blue", Prop: "hint_reset" };
 
-	ClearProps();
-	main_timer.Restart(45);
+    AddTimer("prps", {loop: true, time: 3}, function() { 
+        for (let e = Properties.GetContext().GetProperties().GetEnumerator(); e.moveNext(); ) {
+            if (count > 100) {
+                Timers.GetContext().Get("prps").RestartLoop(1);
+                break;
+            }
+            e.Current.Value = null;
+		    count++;
+        }
+    });
+
+    AddTimer("p_prps", {loop: false, time: 10}, function() { 
+        for (let e = Players.GetEnumerator(); e.MoveNext();) for (let p = e.Current.Properties.GetProperties().GetEnumerator(); p.MoveNext();) p.Current.Value = null;
+    });
+    
+    Build.GetContext().FlyEnable.Value = true;
+
+	main_timer.Restart(90);
 }
