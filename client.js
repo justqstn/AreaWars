@@ -646,7 +646,7 @@ function ClearAreas() {
                     msg.Show(str);
                     break;
                 }
-                if (e.Current.Tags.Count == 0) continue;
+                if (e.Current.Ranges.Count == 0) continue;
                 e.Current.Tags.Clear();
                 e.Current.Ranges.Clear();
                 count++;
