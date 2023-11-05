@@ -638,6 +638,7 @@ function rgb(rc, gc, bc) {
 function ClearAreas() {
 	AddTimer("clear_arss", {loop: true, time: 2}, function() {
         try {
+            let count = 0;
             for (let e = AreaService.GetEnumerator(); e.moveNext(); ) {
                 if (count > 15) {
                     Timers.GetContext().Get("clear_arss").RestartLoop(2);
