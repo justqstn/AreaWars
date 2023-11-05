@@ -551,7 +551,6 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "end":
 			ClearAreas();
-			ClearProps();
 			break;
 		case "clearing":
 			Game.RestartGame();
@@ -617,6 +616,15 @@ function AddArea(params) {
     return {Trigger: t, View: t};
 }
 
+function AddTimer(id, params, event) {
+    let t = Timers.GetContext().Get(id);
+    if (params) {
+        if (params.loop) t.RestartLoop(params.time);
+        else t.Restart(params.time);
+    }
+    t.OnTimer.Add(event);
+}
+
 function rgb(rc, gc, bc) {
 	return { r: rc / 255, g: gc / 255, b: bc / 255 };
 }
@@ -660,18 +668,21 @@ function ThirdPhase() {
 }
 
 function ClearProps() {
-	let count = 0;
-	let e = Teams.GetEnumerator(), props = Properties.GetContext().GetAllProperties().GetEnumerator();
-	while (props.moveNext()) {
-		props.Current.Value = null;
-		count++;
-	}
-	while (e.moveNext()) {
-		DEFAULT_TEAM_PROPS.Names.forEach(function (prop) {
-			e.Current.Properties.Get(prop).Value = null;
-			count++;
-		});
-	}
+    AddTimer("prps", {loop: true, time: 5}, function() { 
+        for (let e = Properties.GetContext().GetProperties().GetEnumerator(); e.moveNext(); ) {
+            if (count > 100) {
+                Timers.GetContext().Get("prps").RestartLoop(1);
+                break;
+            }
+            props.Current.Value = null;
+		    count++;
+        }
+    });
+
+    AddTimer("p_prps", {loop: false, time: 3}, function() { 
+        for (let e = Players.GetEnumerator(); e.MoveNext();) for (let p = e.Current.Properties.GetProperties().GetEnumerator(); p.MoveNext();) p.Current.Value = null;
+    });
+
     msg.Show(count);
 	state.Value = "clearing";
 	main_timer.Restart(10);
@@ -680,22 +691,13 @@ function ClearProps() {
 
 function End() {
 	Ui.GetContext().Hint.Value = "Конец игры" + b_team.Properties.Get("points").Value > r_team.Properties.Get("points").Value ? "Синие победили</i>" : b_team.Properties.Get("points").Value == r_team.Properties.Get("points").Value ? "Ничья" : "Красные победили";
-	msg.Show("<i>" + (b_team.Properties.Get("points").Value > r_team.Properties.Get("points").Value ? "Синие победили</i>" : b_team.Properties.Get("points").Value == r_team.Properties.Get("points").Value ? "Ничья</i>" : "Красные победили</i>"), "<B><color=red>Area</color><color=blue>Wars</color> v.1.7global\nот just_qstn</B>");
 	state.Value = "end";
 	Damage.GetContext().DamageOut.Value = false;
 
-	Ui.GetContext().TeamProp1.Value = {
-		Team: "red", Prop: "hint_reset"
-	};
-	Ui.GetContext().TeamProp2.Value = {
-		Team: "blue", Prop: "hint_reset"
-	};
-	r_team.Ui.TeamProp1.Value = {
-		Team: "red", Prop: "hint_reset"
-	};
-	b_team.Ui.TeamProp2.Value = {
-		Team: "blue", Prop: "hint_reset"
-	};
+	Ui.GetContext().TeamProp1.Value = { Team: "red", Prop: "hint_reset" };
+	Ui.GetContext().TeamProp2.Value = { Team: "blue", Prop: "hint_reset" };
+	r_team.Ui.TeamProp1.Value = { Team: "red", Prop: "hint_reset" };
+	b_team.Ui.TeamProp2.Value = { Team: "blue", Prop: "hint_reset" };
 
 	ClearAreas();
 	main_timer.Restart(10);
