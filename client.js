@@ -555,8 +555,21 @@ main_timer.OnTimer.Add(function () {
 			break;
 		case "end":
             state.Value = "clearing";
-			ClearAreas();
-            main_timer.Restart(10);
+			AddTimer("clear_arss", { loop: true, time: 1 }, function () {
+                let count = 0;
+                for (let e = AreaService.GetEnumerator(); e.moveNext();) {
+                    if (count > 15) {
+                        Timers.GetContext().Get("clear_arss").RestartLoop(2);
+                        msg.Show(str);
+                        break;
+                    }
+                    if (e.Current.Ranges.Count == 0) continue;
+                    e.Current.Tags.Clear();
+                    e.Current.Ranges.Clear();
+                    count++;
+                }
+            });
+            main_timer.Restart(30);
 			break;
 		case "clearing":
 			Game.RestartGame();
@@ -633,27 +646,6 @@ function AddTimer(id, params, event) {
 
 function rgb(rc, gc, bc) {
 	return { r: rc / 255, g: gc / 255, b: bc / 255 };
-}
-
-function ClearAreas() {
-	AddTimer("clear_arss", {loop: true, time: 2}, function() {
-        try {
-            let count = 0;
-            let str = "";
-            for (let e = AreaService.GetEnumerator(); e.moveNext(); ) {
-                if (count > 15) {
-                    Timers.GetContext().Get("clear_arss").RestartLoop(2);
-                    msg.Show(str);
-                    break;
-                }
-                if (e.Current.Ranges.Count == 0) continue;
-                e.Current.Tags.Clear();
-                e.Current.Ranges.Clear();
-                count++;
-                str += e.Current.Name + " ";
-            }
-        } catch(e) { msg.Show(e.name + " " + e.message); }
-    });
 }
 
 function FirstPhase() {
