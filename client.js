@@ -18,7 +18,7 @@ MIT License Copyright (c) 2023 just_qstn (vk, tg, discord: just_qstn. old discor
 
 
 // Константы
-const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "9DE9DFD7D1F5C16A", BANNED_ID = "", DEFAULT_PROPS = {
+const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "", DEFAULT_PROPS = {
 	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
 	Values: [Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
 }, DEFAULT_TEAM_PROPS = {
@@ -375,7 +375,7 @@ const Products = [
 			return p.Team.Properties.Get("points").Value < p.Team.Properties.Get("max_points").Value;
 		},
 		Buy: function (p) {
-			p.Team.Properties.Get("points").Value += 35 * p.Team.Properties.Get("level").Value;
+			p.Team.Properties.Get("points").Value += 15 * p.Team.Properties.Get("level").Value;
 			if (p.Team.Properties.Get("points").Value > p.Team.Properties.Get("max_points").Value) p.Team.Properties.Get("points").Value = p.Team.Properties.Get("max_points").Value;
 		}
 	}, new prd_Autobridge("autobridge", 40000, "silver"), new prd_Autobridge("autobridge_perm", 1000, "gold"), new prd_Gold(300, 25000), new prd_Gold(1000, 75000), new prd_Gold(3000, 200000),
