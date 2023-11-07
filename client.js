@@ -144,7 +144,8 @@ Map.OnLoad.Add(function () {
 });
 
 Teams.OnRequestJoinTeam.Add(function (p, t) {
-	if (state.Value == "init" || t == banned) return;
+	try {
+		if (state.Value == "init" || t == banned) return;
 
 	if (p.NickName == p.Id) {
 		p.Ui.Hint.Value = "Вы забанены сервером. Причина: ваш ник это айди или уровень меньше 45";
@@ -154,8 +155,10 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		return;
 	}
 
-	if (props.Get(p.Id + "save").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) { if (prop != "hp") p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index]; else p.contextedProperties.MaxHp.Value = DEFAULT_PROPS.Values[index];});
-	else DEFAULT_PROPS.Names.forEach(function (prop, index) { if (prop != "hp") p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index]; else p.contextedProperties.MaxHp.Value =props.Get(p.Id + "save").Value[index];});
+	if (p.Team == null) {
+		if (props.Get(p.Id + "save").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) { if (prop != "hp") p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index]; else p.contextedProperties.MaxHp.Value = DEFAULT_PROPS.Values[index];});
+		else DEFAULT_PROPS.Names.forEach(function (prop, index) { if (prop != "hp") p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index]; else p.contextedProperties.MaxHp.Value =props.Get(p.Id + "save").Value[index];});
+	}
 
 	p.Properties.Get("rid").Value = p.IdInRoom;
 	props.Get(p.Id + "save").Value = null;
@@ -180,6 +183,7 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		else if (b_c > r_c) r_team.Add(p);
 	}
 	else t.Add(p);
+	} catch(e) { msg.Show(e.name + " " + e.message)}
 });
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
