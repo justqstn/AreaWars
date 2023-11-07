@@ -1,5 +1,5 @@
 try {
-	/* 
+/* 
 AreaWars от just_qstn  
 AreaWars by just_qstn
 Gamemode for Pixel Combats 2
@@ -65,8 +65,8 @@ Inventory.GetContext().Build.Value = false;
 
 
 // Создание команд
-Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.8</i>", { r: 0.15, b: 0.67 });
-Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.8</i>", { r: 0.67, b: 0.15 });
+Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.8</i>", rgb(30, 144, 255));
+Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.8</i>", rgb(205, 92, 92));
 Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.8</i>", { r: 0 });
 let b_team = Teams.Get("blue"), r_team = Teams.Get("red"), banned = Teams.Get("banned");
 b_team.Spawns.SpawnPointsGroups.Add(1);
@@ -144,8 +144,7 @@ Map.OnLoad.Add(function () {
 });
 
 Teams.OnRequestJoinTeam.Add(function (p, t) {
-	try {
-		if (state.Value == "init" || t == banned) return;
+	if (state.Value == "init" || t == banned) return;
 
 	if (p.NickName == p.Id) {
 		p.Ui.Hint.Value = "Вы забанены сервером. Причина: ваш ник это айди или уровень меньше 45";
@@ -192,7 +191,6 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		else if (b_c > r_c) r_team.Add(p);
 	}
 	else t.Add(p);
-	} catch(e) { msg.Show(e.name + " " + e.message)}
 });
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
