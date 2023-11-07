@@ -159,7 +159,7 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 			DEFAULT_PROPS.Names.forEach(function (prop, index) { 
 				p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index];
 			});
-			p.contextedProperties.MaxHp.Value = props.Get(p.Id + "save").Value[9];
+			p.contextedProperties.MaxHp.Value = props.Get(p.Id + "save").Value[10];
 		} else {
 			DEFAULT_PROPS.Names.forEach(function (prop, index) { 
 				p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index]; 
