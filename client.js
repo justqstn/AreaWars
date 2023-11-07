@@ -1,4 +1,5 @@
-/* 
+try {
+	/* 
 AreaWars от just_qstn  
 AreaWars by just_qstn
 Gamemode for Pixel Combats 2
@@ -22,8 +23,8 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
 	Values: [Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
 }, DEFAULT_TEAM_PROPS = {
-	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold"],
-	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
+	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold", "hp"],
+	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0, 100]
 }, VESTS_VALUE = [
 	200, 350, 500
 ], FIRST_PHASE = GameMode.Parameters.GetBool("short") ? 600 : GameMode.Parameters.GetBool("middle") ? 1200 : 1800,
@@ -153,6 +154,12 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		return;
 	}
 
+	if (props.Get(p.Id + "save").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) { if (prop != "hp") p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index]; else p.contextedProperties.MaxHp.Value = DEFAULT_PROPS.Values[index];});
+	else DEFAULT_PROPS.Names.forEach(function (prop, index) { if (prop != "hp") p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index]; else p.contextedProperties.MaxHp.Value =props.Get(p.Id + "save").Value[index];});
+
+	p.Properties.Get("rid").Value = p.IdInRoom;
+	props.Get(p.Id + "save").Value = null;
+
 	if (state.Value == "waiting" && b_team.Count + r_team.Count >= NEED_PLAYERS - 1) {
 		Ui.GetContext().Hint.Value = "Загрузка...";
 		state.Value = "loading";
@@ -176,16 +183,7 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 });
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
-	try {
-		if (!p.Properties.Get("loaded").Value) DEFAULT_PROPS.Names.forEach(function (prop, index) {
-			if (props.Get(p.Id + "save").Value == null) p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index];
-			else p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index];
-		});
-		p.Spawns.Spawn();
-		p.Properties.Get("rid").Value = p.IdInRoom;
-		props.Get(p.Id + "save").Value = null;
-		p.Properties.Get("loaded").Value = true;
-	} catch (e) { msg.Show(e.name + " " + e.message) }
+	p.Spawns.Spawn();
 });
 
 Players.OnPlayerConnected.Add(function (p) {
@@ -203,6 +201,7 @@ Players.OnPlayerDisconnected.Add(function (p) {
 	DEFAULT_PROPS.Names.forEach(function (prop) {
 		arr.push(p.Properties.Get(prop).Value);
 	});
+	arr.push(p.contextedProperties.MaxHp.Value);
 	props.Get(p.Id + "save").Value = arr;
 });
 
@@ -705,5 +704,6 @@ function End() {
     
     Build.GetContext().FlyEnable.Value = true;
 
-	main_timer.Restart(90);
+	main_timer.Restart(60);
 }
+} catch(e) { Validate.ReportInvalid(e.name + " " + e.message);}
