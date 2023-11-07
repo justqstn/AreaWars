@@ -158,7 +158,7 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		if (props.Get(p.Id + "save").Value) {
 			DEFAULT_PROPS.Names.forEach(function (prop, index) { 
 				if (prop != "hp") p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index]; 
-				else p.contextedProperties.MaxHp.Value =props.Get(p.Id + "save").Value[index];
+				else p.contextedProperties.MaxHp.Value = props.Get(p.Id + "save").Value[index];
 			});
 		} else {
 			DEFAULT_PROPS.Names.forEach(function (prop, index) { 
@@ -211,8 +211,8 @@ Players.OnPlayerDisconnected.Add(function (p) {
 	let arr = [];
 	DEFAULT_PROPS.Names.forEach(function (prop) {
 		arr.push(p.Properties.Get(prop).Value);
+		if (prop == "hp") arr.push(p.contextedProperties.MaxHp.Value);
 	});
-	arr.push(p.contextedProperties.MaxHp.Value);
 	props.Get(p.Id + "save").Value = arr;
 });
 
