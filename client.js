@@ -65,9 +65,9 @@ Inventory.GetContext().Build.Value = false;
 
 
 // Создание команд
-Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\nareawars v1.8</i>", rgb(30, 144, 255));
-Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\nareawars v1.8</i>", rgb(205, 92, 92));
-Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\nareawars v1.8</i>", { r: 0 });
+Teams.Add("blue", "<i><B><size=38>С</size><size=30>иние</size></B>\n</i>areawars v1.8", rgb(30, 144, 255));
+Teams.Add("red", "<i><B><size=38>К</size><size=30>расные</size></B>\n</i>areawars v1.8", rgb(205, 92, 92));
+Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size></B>\n</i>areawars v1.8", { r: 0 });
 let b_team = Teams.Get("blue"), r_team = Teams.Get("red"), banned = Teams.Get("banned");
 b_team.Spawns.SpawnPointsGroups.Add(1);
 r_team.Spawns.SpawnPointsGroups.Add(2);
