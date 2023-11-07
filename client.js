@@ -210,8 +210,8 @@ Players.OnPlayerConnected.Add(function (p) {
 Players.OnPlayerDisconnected.Add(function (p) {
 	let arr = [];
 	DEFAULT_PROPS.Names.forEach(function (prop) {
-		arr.push(p.Properties.Get(prop).Value);
-		if (prop == "hp") arr.push(p.contextedProperties.MaxHp.Value);
+		if (prop == "hp") arr.push(p.contextedProperties.MaxHp);
+		else arr.push(p.Properties.Get(prop).Value);
 	});
 	props.Get(p.Id + "save").Value = arr;
 });
