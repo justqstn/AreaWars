@@ -23,8 +23,8 @@ const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B
 	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
 	Values: [Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
 }, DEFAULT_TEAM_PROPS = {
-	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold", "hp"],
-	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0, 100]
+	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold"],
+	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
 }, VESTS_VALUE = [
 	200, 350, 500
 ], FIRST_PHASE = GameMode.Parameters.GetBool("short") ? 600 : GameMode.Parameters.GetBool("middle") ? 1200 : 1800,
@@ -157,14 +157,14 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 	if (p.Team == null) {
 		if (props.Get(p.Id + "save").Value) {
 			DEFAULT_PROPS.Names.forEach(function (prop, index) { 
-				if (prop != "hp") p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index]; 
-				else p.contextedProperties.MaxHp.Value = props.Get(p.Id + "save").Value[index];
+				p.Properties.Get(prop).Value = props.Get(p.Id + "save").Value[index];
 			});
+			p.contextedProperties.MaxHp.Value = props.Get(p.Id + "save").Value[9];
 		} else {
 			DEFAULT_PROPS.Names.forEach(function (prop, index) { 
-				if (prop != "hp") p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index]; 
-				else p.contextedProperties.MaxHp.Value = DEFAULT_PROPS.Values[index];
+				p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index]; 
 			});
+			p.contextedProperties.MaxHp.Value = 100;
 		}
 	}
 
@@ -210,9 +210,9 @@ Players.OnPlayerConnected.Add(function (p) {
 Players.OnPlayerDisconnected.Add(function (p) {
 	let arr = [];
 	DEFAULT_PROPS.Names.forEach(function (prop) {
-		if (prop == "hp") arr.push(p.contextedProperties.MaxHp);
-		else arr.push(p.Properties.Get(prop).Value);
+		arr.push(p.Properties.Get(prop).Value)
 	});
+	arr.push(p.contextedProperties.MaxHp)
 	props.Get(p.Id + "save").Value = arr;
 });
 
