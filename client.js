@@ -1,5 +1,5 @@
 try {
-	
+
 // Константы
 const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "",
 	DEFAULT_PROPS = {
@@ -135,13 +135,7 @@ Teams.OnRequestJoinTeam.Add(function (p, t) {
 		p.Build.BuildRangeEnable.Value = true;
 	}
 
-	let b_c = b_team.Count - (p.Team == b_team ? 1 : 0),
-		r_c = r_team.Count - (p.Team == r_team ? 1 : 0);
-	if (b_c != r_c) {
-		if (b_c < r_c) b_team.Add(p);
-		else if (b_c > r_c) r_team.Add(p);
-	}
-	else t.Add(p);
+	AddPlayer(p, t);
 });
 
 Teams.OnPlayerChangeTeam.Add(function (p) {
@@ -449,15 +443,10 @@ function t_ban(p, a) {
 			plr.Properties.Get("banned_hint").Value = hint;
 			p.Ui.Hint.Value = "Zaбанен " + plr.NickName + " id: " + plr.Id;
 		} else {
-			const b_c = b_team.Count,
-				r_c = r_team.Count;
-			if (b_c != r_c) {
-				if (b_c < r_c) b_team.Add(plr);
-				else if (b_c > r_c) r_team.Add(plr);
-			} else b_team.Add(plr);
 			plr.Properties.Get("banned").Value = false;
 			p.Ui.Hint.Value = "Раzбанен " + plr.NickName + " id: " + plr.Id;;
 			plr.Ui.Hint.Reset();
+			AddPlayer(plr, b_team);
 		}
 	}
 }
@@ -584,6 +573,16 @@ Timers.OnPlayerTimer.Add(function (t) {
 });
 
 // Функции
+function AddPlayer(p, t) {
+	const b_c = b_team.Count,
+		r_c = r_team.Count;
+	if (b_c != r_c) {
+		if (b_c < r_c) b_team.Add(p);
+		else if (b_c > r_c) r_team.Add(p);
+	} 
+	else t.Add(p);
+}
+
 function AddArea(params) {
     let t = AreaPlayerTriggerService.Get(params.name), v = AreaViewService.GetContext().Get(params.name);
     v.Tags = params.tags;
@@ -663,9 +662,7 @@ function End() {
     AddTimer("p_prps", {loop: false, time: 10}, function() { 
         for (let e = Players.GetEnumerator(); e.MoveNext();) for (let p = e.Current.Properties.GetProperties().GetEnumerator(); p.MoveNext();) p.Current.Value = null;
     });
-    
     Build.GetContext().FlyEnable.Value = true;
-
 	main_timer.Restart(60);
 }
 } catch(e) { Validate.ReportInvalid(e.name + " " + e.message);}
