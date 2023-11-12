@@ -19,20 +19,20 @@ MIT License Copyright (c) 2023 just_qstn (vk, tg, discord: just_qstn. old discor
 
 
 // Константы
-const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "", DEFAULT_PROPS = {
-	Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
-	Values: [Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"]
-}, DEFAULT_TEAM_PROPS = {
-	Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold"],
-	Values: [125, 100, 1, 1, 0, 150, 1, 0, 0]
-}, VESTS_VALUE = [
-	200, 350, 500
-], FIRST_PHASE = GameMode.Parameters.GetBool("short") ? 600 : GameMode.Parameters.GetBool("middle") ? 1200 : 1800,
+const NEED_PLAYERS = Players.MaxCount == 1 ? 1 : 2, ADMINS_ID = "62C9E96EAE4FB4B15FFD0194E3071DDB9DE9DFD7D1F5C16AACDC54C07D66B94AB435D6ADF12B587A", BANNED_ID = "",
+	DEFAULT_PROPS = {
+		Names: ["silver", "gold", "Kills", "Deaths", "save_gold", "save_silver", "hp", "banned", "banned_hint", "mode"],
+		Values: [Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, Players.MaxCount == 1 ? 999999999 : 0, false, false, 100, false, "ебаный даун", "silver"] }, 
+	DEFAULT_TEAM_PROPS = {
+		Names: ["max_points", "points", "silver_booster", "gold_booster", "xp", "next_xp", "level", "silver", "gold"],
+		Values: [125, 100, 1, 1, 0, 150, 1, 0, 0] }, 
+	VESTS_VALUE = [ 200, 350, 500 ], 
+	FIRST_PHASE = GameMode.Parameters.GetBool("short") ? 600 : GameMode.Parameters.GetBool("middle") ? 1200 : 1800,
 	SECOND_PHASE = GameMode.Parameters.GetBool("short") ? 1200 : GameMode.Parameters.GetBool("middle") ? 2400 : 3600,
 	THIRD_PHASE = GameMode.Parameters.GetBool("short") ? 300 : GameMode.Parameters.GetBool("middle") ? 600 : 1200;
  
 // Переменные
-let props = Properties.GetContext(), saved_id = props.Get("saved"), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), clearing_timer = Timers.GetContext().Get("clear"), update_timer = Timers.GetContext().Get("upd"),
+let props = Properties.GetContext(), state = props.Get("state"), main_timer = Timers.GetContext().Get("main"), update_timer = Timers.GetContext().Get("upd"),
 	banned_id = props.Get("banned_id"), array_areas = Properties.GetContext().Get("arr"), silver = AreaPlayerTriggerService.Get("silver"), gold = AreaPlayerTriggerService.Get("gold"), capture_blue = AreaPlayerTriggerService.Get("capture_blue"), capture_red = AreaPlayerTriggerService.Get("capture_red"); 
 
 // Настройки
@@ -71,8 +71,6 @@ Teams.Add("banned", "<i><B><size=38>З</size><size=30>абаненные</size><
 let b_team = Teams.Get("blue"), r_team = Teams.Get("red"), banned = Teams.Get("banned");
 b_team.Spawns.SpawnPointsGroups.Add(1);
 r_team.Spawns.SpawnPointsGroups.Add(2);
-banned.Spawns.CustomSpawnPoints.Add(100000, 100000, 100000, 1);
-banned.Damage.DamageIn.Value = false;
 
 b_team.Build.BlocksSet.Value = BuildBlocksSet.Blue;
 r_team.Build.BlocksSet.Value = BuildBlocksSet.Red;
@@ -85,47 +83,18 @@ Teams.OnAddTeam.Add(function (t) {
 });
 
 // Интерфейс
-Ui.GetContext().TeamProp1.Value = {
-	Team: "red", Prop: "hint_all"
-};
-Ui.GetContext().TeamProp2.Value = {
-	Team: "blue", Prop: "hint_all"
-};
-
-r_team.Ui.TeamProp1.Value = {
-	Team: "red", Prop: "hint"
-};
-b_team.Ui.TeamProp2.Value = {
-	Team: "blue", Prop: "hint"
-};
+Ui.GetContext().TeamProp1.Value = { Team: "red", Prop: "hint_all" };
+Ui.GetContext().TeamProp2.Value = { Team: "blue", Prop: "hint_all" };
+r_team.Ui.TeamProp1.Value = { Team: "red", Prop: "hint" };
+b_team.Ui.TeamProp2.Value = { Team: "blue", Prop: "hint" };
 
 // Лидерборд
 LeaderBoard.PlayerLeaderBoardValues = [
-	{
-		Value: "Kills",
-		DisplayName: "<B>K</B>",
-		ShortDisplayName: "<B>K</B>"
-	},
-	{
-		Value: "Deaths",
-		DisplayName: "<B>D</B>",
-		ShortDisplayName: "<B>D</B>"
-	},
-	{
-		Value: "silver",
-		DisplayName: "<B>S</B>",
-		ShortDisplayName: "<B>S</B>"
-	},
-	{
-		Value: "gold",
-		DisplayName: "<B>G</B>",
-		ShortDisplayName: "<B>G</B>"
-	},
-	{
-		Value: "rid",
-		DisplayName: "<B>ID</B>",
-		ShortDisplayName: "<B>ID</B>"
-	}
+	{ Value: "Kills", DisplayName: "<B>K</B>", ShortDisplayName: "<B>K</B>"},
+	{ Value: "Deaths", DisplayName: "<B>D</B>", ShortDisplayName: "<B>D</B>" },
+	{ Value: "silver", DisplayName: "<B>S</B>", ShortDisplayName: "<B>S</B>" },
+	{ Value: "gold", DisplayName: "<B>G</B>", ShortDisplayName: "<B>G</B>" },
+	{ Value: "rid", DisplayName: "<B>ID</B>", ShortDisplayName: "<B>ID</B>" }
 ];
 
 LeaderBoard.TeamWeightGetter.Set(function (t) {
@@ -212,7 +181,7 @@ Players.OnPlayerDisconnected.Add(function (p) {
 	DEFAULT_PROPS.Names.forEach(function (prop) {
 		arr.push(p.Properties.Get(prop).Value)
 	});
-	arr.push(p.contextedProperties.MaxHp)
+	arr.push(p.contextedProperties.MaxHp.Value)
 	props.Get(p.Id + "save").Value = arr;
 });
 
