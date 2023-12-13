@@ -82,7 +82,8 @@ try {
 	});
 
 	Teams.OnRequestJoinTeam.Add(function (p, t) {
-		if (state.Value == "init" || t == banned) return;
+		try {
+			if (state.Value == "init" || t == banned) return;
 
 		if (p.NickName == p.Id) {
 			p.Ui.Hint.Value = "Вы забанены сервером. Причина: ваш ник это айди или уровень меньше 45";
@@ -123,6 +124,9 @@ try {
 		}
 
 		AddPlayer(p, t);
+		} catch (error) {
+			msg.Show(error.name + " " + error.message)
+		}
 	});
 
 	Teams.OnPlayerChangeTeam.Add(function (p) {
