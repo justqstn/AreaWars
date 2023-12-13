@@ -97,9 +97,9 @@ try {
 				DEFAULT_PROPS.Names.forEach(function (prop, index) {
 					let arr = props.Get(p.Id + "save").Value;
 					p.Properties.Get(prop).Value = arr[index];
-					props.Get(p.Id + "save").Value == null;
 				});
 				p.contextedProperties.MaxHp.Value = arr[6];
+				props.Get(p.Id + "save").Value = null;
 			} else {
 				DEFAULT_PROPS.Names.forEach(function (prop, index) {
 					p.Properties.Get(prop).Value = DEFAULT_PROPS.Values[index];
@@ -142,9 +142,9 @@ try {
 	Players.OnPlayerDisconnected.Add(function (p) {
 		let arr = [];
 		DEFAULT_PROPS.Names.forEach(function (prop) {
-			arr.push(p.Properties.Get(prop).Value)
+			if (prop == "hp") arr.push(p.contextedProperties.MaxHp.Value)
+			else arr.push(p.Properties.Get(prop).Value)
 		});
-		arr.push(p.contextedProperties.MaxHp.Value)
 		props.Get(p.Id + "save").Value = arr;
 	});
 
