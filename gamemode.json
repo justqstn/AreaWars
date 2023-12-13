@@ -1,6 +1,6 @@
 {
   "Name": "<B><color=#CD5C5C>Area</color><color=#4682B4>Wars</color><color=red> [1.9 beta]</color></B>",
-  "Description": "<B>v1.9beta - общий банк, правки времени фаз, режиым игры. Режим от just_qstn.</B>\nВНИМАНИЕ: для начала игры требуется 2 человека\n<i>Туториал можно найти в телеграме: t.me/pixel_combats2 по хештегу #areawars</i>",
+  "Description": "<B>v1.9beta. Режим от just_qstn.</B>\nВНИМАНИЕ: для начала игры требуется 2 человека\n<i>Туториал можно найти в телеграме: t.me/pixel_combats2 по хештегу #areawars</i>",
   "StartClientVersion": 334,
   "MapFilter": {
     "IsBlank": false,
