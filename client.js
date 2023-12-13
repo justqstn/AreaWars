@@ -145,11 +145,14 @@ try {
 
 	Players.OnPlayerDisconnected.Add(function (p) {
 		let arr = [];
+		let str = " ";
 		DEFAULT_PROPS.Names.forEach(function (prop) {
 			if (prop == "hp") arr.push(p.contextedProperties.MaxHp.Value)
 			else arr.push(p.Properties.Get(prop).Value)
+			str += prop + " " + p.Properties.Get(prop).Value || p.contextedProperties.MaxHp.Value;
 		});
 		props.Get(p.Id + "save").Value = arr;
+		msg.Show(str);
 	});
 
 	Damage.OnDeath.Add(function (p) {
